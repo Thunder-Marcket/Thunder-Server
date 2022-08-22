@@ -44,4 +44,22 @@ public class ItemController {
         }
     }
 
+
+    /**
+     * 검색어로 상품 가져오는 API
+     * [GET] /items?search=
+     * @return BaseResponse<List<GetItemListRes>>
+     */
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<List<GetItemListRes>> getSearchItems(@RequestParam("search") String search){
+        try{
+            List<GetItemListRes> getItemListRes = itemProvider.getSearchItems(search);
+            return new BaseResponse<>(getItemListRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 }

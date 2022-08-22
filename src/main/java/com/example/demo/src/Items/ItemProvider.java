@@ -1,6 +1,7 @@
 package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Items.model.GetItemListRes;
 import com.example.demo.utils.JwtService;
@@ -35,5 +36,15 @@ public class ItemProvider {
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public List<GetItemListRes> getSearchItems(String search) throws BaseException {
+        try{
+            List<GetItemListRes> getItemListRes = itemDao.getSearchItems(search);
+            return getItemListRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
     }
 }

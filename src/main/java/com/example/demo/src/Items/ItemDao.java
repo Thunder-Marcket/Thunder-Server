@@ -1,5 +1,6 @@
 package com.example.demo.src.Items;
 
+import com.example.demo.config.BaseException;
 import com.example.demo.src.Items.model.GetItemListRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,5 +72,25 @@ public class ItemDao {
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck")),
                 getItemParams);
+    }
+
+    public List<GetItemListRes> getSearchItems(String search) throws BaseException {
+        String getSearchItemQuery = "";
+        String getSearchItemParam = search;
+
+        return this.jdbcTemplate.query(getSearchItemQuery,
+                (rs, rowNum) -> new GetItemListRes(
+                        rs.getInt("itemIdx"),
+                        rs.getInt("cost"),
+                        rs.getString("itemName"),
+                        rs.getString("address"),
+                        rs.getString("period"),
+                        rs.getString("imageUrl"),
+                        rs.getInt("isSafePayment"),
+                        rs.getInt("isLike"),
+                        rs.getInt("likeCnt"),
+                        rs.getInt("isCanCheck")),
+                search);
+
     }
 }
