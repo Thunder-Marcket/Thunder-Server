@@ -11,6 +11,10 @@
 # bin
 *.bin
 
+gradle
+idea
+build
+
 # BlueJ files
 *.ctxt
 
