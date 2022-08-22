@@ -38,9 +38,9 @@ public class ItemProvider {
         }
     }
 
-    public List<GetItemListRes> getSearchItems(String search) throws BaseException {
+    public List<GetItemListRes> getSearchItems(int userIdx, String search) throws BaseException {
         try{
-            List<GetItemListRes> getItemListRes = itemDao.getSearchItems(search);
+            List<GetItemListRes> getItemListRes = itemDao.getSearchItems(userIdx, search);
             return getItemListRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

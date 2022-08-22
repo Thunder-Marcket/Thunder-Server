@@ -74,9 +74,37 @@ public class ItemDao {
                 getItemParams);
     }
 
-    public List<GetItemListRes> getSearchItems(String search) throws BaseException {
-        String getSearchItemQuery = "";
-        String getSearchItemParam = search;
+    public List<GetItemListRes> getSearchItems(int userIdx, String search) throws BaseException {
+        String getSearchItemQuery = "select I.itemIdx,\n" +
+                "       I.cost,\n" +
+                "       I.itemName,\n" +
+                "       I.address,\n" +
+                "       case\n" +
+                "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
+                "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
+                "        END AS period,\n" +
+                "       (select Images.imageUrl from Images\n" +
+                "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
+                "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
+                "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx)) AS imageUrl,\n" +
+                "       I.isSafePayment,\n" +
+                "       case\n" +
+                "           when (select 1 from Likes inner join Users U on Likes.userIdx = U.userIdx\n" +
+                "               where U.userIdx = ? and Likes.itemIdx = I.itemIdx)\n" +
+                "               then 1\n" +
+                "            ELSE 0\n" +
+                "        END isLike,\n" +
+                "\n" +
+                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       I.isCanCheck\n" +
+                "\n" +
+                "from Items I\n" +
+                "\n" +
+                "where instr(I.itemName, ?) or (select instr(T.tagName, ?) from Tags T where T.itemIdx = I.itemIdx)\n" +
+                "\n" +
+                "order by I.createdAt DESC";
+        Object[] getSearchItemParam = new Object[]{userIdx, search, search};
 
         return this.jdbcTemplate.query(getSearchItemQuery,
                 (rs, rowNum) -> new GetItemListRes(
@@ -90,7 +118,7 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck")),
-                search);
+                getSearchItemParam);
 
     }
 }

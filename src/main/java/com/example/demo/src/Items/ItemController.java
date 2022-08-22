@@ -52,9 +52,9 @@ public class ItemController {
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetItemListRes>> getSearchItems(@RequestParam("search") String search){
+    public BaseResponse<List<GetItemListRes>> getSearchItems(@PathVariable("userIdx") int userIdx, @RequestParam("search") String search){
         try{
-            List<GetItemListRes> getItemListRes = itemProvider.getSearchItems(search);
+            List<GetItemListRes> getItemListRes = itemProvider.getSearchItems(userIdx, search);
             return new BaseResponse<>(getItemListRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
