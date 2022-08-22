@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig host="3.39.65.116" id="723f20ff-f047-4e2d-b008-a7fb58da29bb" keyPath="C:\Users\jinsoo\Downloads\jinsoo.ppk" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
-    </configs>
-  </component>
-</project>
