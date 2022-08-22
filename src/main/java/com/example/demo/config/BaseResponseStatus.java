@@ -30,6 +30,10 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
 
+    POST_USERS_EMPTY_PHONENUM(false, 2018 , "전화번호를 입력해주세요" ),
+    POST_USERS_INVALID_PHONENUM( false, 2019 , "전화번호 형식을 확인해주세요." ),
+    POST_USERS_EXISTS_PHONENUM( false, 2020 , "중복된 전화번호입니다."),
+    POST_USERS_EXISTS_NAME( false, 2021 , "이미 존재하는 이름입니다." ),
 
 
     /**
