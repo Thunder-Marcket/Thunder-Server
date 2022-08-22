@@ -59,21 +59,29 @@ public class UserDao {
     
 
     public int createUser(PostUserReq postUserReq){
-        String createUserQuery = "insert into UserInfo (userName, ID, password, email) VALUES (?,?,?,?)";
-        Object[] createUserParams = new Object[]{postUserReq.getUserName(), postUserReq.getId(), postUserReq.getPassword(), postUserReq.getEmail()};
+        String createUserQuery = "insert into Users(userName, phoneNumber, birth) VALUES (?,?,?)";
+        Object[] createUserParams = new Object[]{postUserReq.getUserName(), postUserReq.getPhoneNumber(), postUserReq.getBirth()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
 
-        String lastInserIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
     }
 
-    public int checkEmail(String email){
-        String checkEmailQuery = "select exists(select email from UserInfo where email = ?)";
-        String checkEmailParams = email;
+
+    public int checkPhoneNum(String phoneNumber) {
+        String checkEmailQuery = "select exists(select phoneNumber from Users where phoneNumber = ?)";
+        String checkEmailParams = phoneNumber;
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 int.class,
                 checkEmailParams);
+    }
 
+    public int checkUserName(String userName) {
+        String checkEmailQuery = "select exists(select userName from Users where userName = ?)";
+        String checkEmailParams = userName;
+        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+                int.class,
+                checkEmailParams);
     }
 
     public int modifyUserName(PatchUserReq patchUserReq){
@@ -99,6 +107,5 @@ public class UserDao {
                 );
 
     }
-
 
 }
