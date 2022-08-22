@@ -2,7 +2,6 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
@@ -61,9 +60,17 @@ public class UserProvider {
         }
     }
 
-    public int checkEmail(String email) throws BaseException{
+    public int checkPhoneNum(String phoneNumber) throws BaseException{
         try{
-            return userDao.checkEmail(email);
+            return userDao.checkPhoneNum(phoneNumber);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkUserName(String userName) throws BaseException {
+        try{
+            return userDao.checkUserName(userName);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
