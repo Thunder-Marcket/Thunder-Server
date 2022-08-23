@@ -1,0 +1,14 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: demo
+
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://database-1.cdaov0zliftt.ap-northeast-2.rds.amazonaws.com/bunjang?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false&autoReconnect=true # 변경해주세요
+    username: jinsoo # 변경해주세요
+    password: jinsoo335 # 변경해주세요
+    driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
+    # driver-class-name: com.mysql.jdbc.Driver # mysql 5버전
