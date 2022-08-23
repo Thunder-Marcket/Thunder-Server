@@ -3,6 +3,7 @@ package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.Items.model.GetItemInfoRes;
 import com.example.demo.src.Items.model.GetItemListRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -49,5 +50,15 @@ public class ItemProvider {
     }
 
 
+    public GetItemInfoRes getItemInfo(int buyUserIdx, int itemIdx) throws BaseException {
+        try{
+            GetItemInfoRes getItemInfoRes = itemDao.getItemInfo(buyUserIdx, itemIdx);
+            return getItemInfoRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
+    }
 }
 

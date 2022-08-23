@@ -13,12 +13,32 @@ import java.util.List;
 @AllArgsConstructor
 public class GetItemInfoRes {
     private List<String> imageUrlList;
+    private List<String> tagList;
+    private List<GetItemListRes> storeItemList;
+    private List<GetItemListRes> similarItemList;
+    private List<Comments> commentList;
     private int cost;
     private String itemName;
     private String address;
     private String period;
     private int isLike;
-    private int likeCnt;
+    private int likeCount;
+    private int itemCount;
+    private int isCanExchange;
+    private int isIncludeOrderTip;
+    private int isUsed;
+    private String itemContent;
+    private int viewCount;
+    private int chatCount;
+    private int userIdx;
+    private int followingCount;
+    private int isFollowCheck;
+    private float star;
+    private int storeItemCount;
+    private String storeImageUrl;
+    private int isCanCheck;
+    private int isSafePayment;
+    private int commentCount;
 
 
 }

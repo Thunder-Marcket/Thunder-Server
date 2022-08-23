@@ -64,11 +64,18 @@ public class ItemController {
      * [GET] /items/:itemIdx
      * @return BaseResponse<GetItemInfoRes>
      */
-//     @ResponseBody
-//     @GetMapping("")
-//     public BaseResponse<GetItemInfoRes> getItemInfo(@PathVariable("itemIdx") int itemIdx){
-//
-//     }
+     @ResponseBody
+     @GetMapping("/{itemIdx}")
+     public BaseResponse<GetItemInfoRes> getItemInfo(@PathVariable("itemIdx") int itemIdx){
+         try{
+             int buyUserIdx = jwtService.getUserIdx();
+
+             GetItemInfoRes getItemInfoRes = itemProvider.getItemInfo(buyUserIdx, itemIdx);
+             return new BaseResponse<>(getItemInfoRes);
+         } catch (BaseException exception){
+             return new BaseResponse<>(exception.getStatus());
+         }
+     }
 
 
 
