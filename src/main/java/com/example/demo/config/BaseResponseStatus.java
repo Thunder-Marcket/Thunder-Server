@@ -1,3 +1,4 @@
+
 package com.example.demo.config;
 
 import lombok.Getter;
@@ -75,3 +76,4 @@ public enum BaseResponseStatus {
         this.message = message;
     }
 }
+

@@ -1,3 +1,4 @@
+
 package com.example.demo.src.Items.model;
 
 import lombok.AllArgsConstructor;
@@ -20,3 +21,4 @@ public class GetItemListRes {
     private int isCanCheck;
     private int isAdCheck;
 }
+

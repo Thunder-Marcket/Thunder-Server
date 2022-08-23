@@ -10,3 +10,4 @@ import lombok.Setter;
 public class BaseException extends Exception {
     private BaseResponseStatus status;
 }
+

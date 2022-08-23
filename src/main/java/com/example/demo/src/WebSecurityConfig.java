@@ -1,3 +1,4 @@
+
 package com.example.demo.src;
 
 import org.springframework.context.annotation.Configuration;
@@ -13,3 +14,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 }
+

@@ -1,3 +1,4 @@
+
 package com.example.demo.src.user.model;
 
 import lombok.AllArgsConstructor;
@@ -11,3 +12,4 @@ public class PostLoginReq {
     private String id;
     private String password;
 }
+

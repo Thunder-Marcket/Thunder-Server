@@ -1,3 +1,4 @@
+
 package com.example.demo.src.user.model;
 
 
@@ -15,3 +16,4 @@ public class GetUserRes {
     private String email;
     private String password;
 }
+

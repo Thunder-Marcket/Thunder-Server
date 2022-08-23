@@ -1,3 +1,4 @@
+
 package com.example.demo.src.user.model;
 
 import lombok.AllArgsConstructor;
@@ -14,3 +15,4 @@ public class User {
     private String password;
     private String email;
 }
+

@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProperty name="filePath" source="logging.file.path"/>
@@ -49,4 +50,5 @@
         <appender-ref ref="APP_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
     </logger>
+
 </configuration>

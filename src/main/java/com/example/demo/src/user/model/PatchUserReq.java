@@ -1,3 +1,4 @@
+
 package com.example.demo.src.user.model;
 
 import lombok.AllArgsConstructor;

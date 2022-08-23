@@ -1,3 +1,4 @@
+
 package com.example.demo.src.user.model;
 
 import lombok.AllArgsConstructor;
@@ -12,3 +13,4 @@ public class PostLoginRes {
     private int userIdx;
     private String jwt;
 }
+

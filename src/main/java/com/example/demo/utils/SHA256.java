@@ -1,3 +1,4 @@
+
 package com.example.demo.utils;
 
 import java.security.MessageDigest;
@@ -35,3 +36,4 @@ public class SHA256 {
         }
     }
 }
+

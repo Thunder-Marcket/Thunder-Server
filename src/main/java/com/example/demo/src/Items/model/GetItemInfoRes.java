@@ -1,6 +1,7 @@
 package com.example.demo.src.Items.model;
 
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,6 @@ public class GetItemInfoRes {
     private String period;
     private int isLike;
     private int likeCnt;
+
 
 }
