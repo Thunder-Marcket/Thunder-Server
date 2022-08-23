@@ -2,3 +2,5 @@
 .idea
 build/
 logs/
+nohup.out
+gradlew
