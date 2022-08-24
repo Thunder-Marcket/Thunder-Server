@@ -51,12 +51,17 @@ public class UserService {
         }
     }
 
-    public void modifyUserName(PatchUserReq patchUserReq) throws BaseException {
+    public PatchUserRes modifyUserName(int userIdx, PatchUserReq patchUserReq) throws BaseException {
+        if (userProvider.checkUserName(patchUserReq.getUserName()) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_NAME);
+        }
+        int result = userDao.modifyUserName(userIdx, patchUserReq);
+        if(result == 0){
+            throw new BaseException(MODIFY_FAIL_USER);
+        }
         try{
-            int result = userDao.modifyUserName(patchUserReq);
-            if(result == 0){
-                throw new BaseException(MODIFY_FAIL_USERNAME);
-            }
+            PatchUserRes patchUserRes = userProvider.getUser(userIdx);
+            return patchUserRes;
         } catch(Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
