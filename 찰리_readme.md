@@ -1,3 +1,4 @@
+https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FAzQY/edit#gid=0
 
 ## 22.08.20
   - ERD 설계 50%
@@ -14,5 +15,14 @@
   - https 적용 문제 해결
 
 ## 22.08.23
-  - 검색어로 상품 목록 가져온는 API 개발
+  - 검색어로 상품 목록 가져오는 API 개발
   - 상품 상세 정보를 가져오는 API 개발
+
+## 22.08.24
+  - API 명세서 중 8-1, 10-3, 4-1, 4-2 개발
+  - 2-4, 2-6 API를 클라이언트 요청에 따라 변경(상품 수량 type을 int 에서 String으로 변경 등)
+
+
+## 1차 피드백 
+  - 환경 이슈 빠르게 해결할 것
+  - API 인당 20개 정도는 만들어야 할 것
