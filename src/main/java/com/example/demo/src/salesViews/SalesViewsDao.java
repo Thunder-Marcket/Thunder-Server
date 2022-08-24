@@ -14,7 +14,8 @@ public class SalesViewsDao {
 
     // 최근 본 상품 조회
     public List<GetSalesViewsRes> getSalesViews(int userIdx) {
-        String getSalesViewsQuery = "select i.itemIdx, itemName, cost, isSafePayment,\n" +
+        String getSalesViewsQuery =
+                "select i.itemIdx, itemName, concat(cost, '원') as cost, isSafePayment,\n" +
                 "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
                 "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
                 "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
@@ -31,7 +32,7 @@ public class SalesViewsDao {
                 "from (\n" +
                 "     select userIdx, itemIdx, updatedAt\n" +
                 "    from SaleViews\n" +
-                "    where userIdx = ? \n" +
+                "    where userIdx = ?\n" +
                 ") sv\n" +
                 "join (\n" +
                 "    select itemIdx, itemName, cost, updatedAt, isSafePayment\n" +
@@ -43,7 +44,7 @@ public class SalesViewsDao {
                 (rs, rowNum) -> new GetSalesViewsRes(
                         rs.getInt("itemIdx"),
                         rs.getString("itemName"),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getInt("isSafePayment"),
                         rs.getString("uploadTime"),
                         rs.getString("imageUrl")),

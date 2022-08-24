@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GetSalesViewsRes {
     private int itemIdx;
     private String itemName;
-    private int cost;
+    private String cost;
     private int isSafePayment;
     private String uploadTime;
     private String imageUrl;
