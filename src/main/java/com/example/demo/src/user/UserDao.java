@@ -42,16 +42,17 @@ public class UserDao {
                 getUsersByEmailParams);
     }
 
-    public GetUserRes getUser(int userIdx){
-        String getUserQuery = "select * from UserInfo where userIdx = ?";
+    public PatchUserRes getUser(int userIdx){
+        String getUserQuery =
+                "select userIdx, userName, profileImgUrl\n" +
+                "from Users\n" +
+                "where userIdx = ?;";
         int getUserParams = userIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
-                (rs, rowNum) -> new GetUserRes(
+                (rs, rowNum) -> new PatchUserRes(
                         rs.getInt("userIdx"),
                         rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password")),
+                        rs.getString("profileImgUrl")),
                 getUserParams);
     }
     
@@ -75,16 +76,16 @@ public class UserDao {
     }
 
     public int checkUserName(String userName) {
-        String checkEmailQuery = "select exists(select userName from Users where userName = ?)";
-        String checkEmailParams = userName;
-        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+        String checkUserNameQuery = "select exists(select userName from Users where userName = ?)";
+        String checkUserNameParams = userName;
+        return this.jdbcTemplate.queryForObject(checkUserNameQuery,
                 int.class,
-                checkEmailParams);
+                checkUserNameParams);
     }
 
-    public int modifyUserName(PatchUserReq patchUserReq){
-        String modifyUserNameQuery = "update UserInfo set userName = ? where userIdx = ? ";
-        Object[] modifyUserNameParams = new Object[]{patchUserReq.getUserName(), patchUserReq.getUserIdx()};
+    public int modifyUserName(int userIdx, PatchUserReq patchUserReq){
+        String modifyUserNameQuery = "update Users set userName = ?, profileImgUrl = ? where userIdx = ?";
+        Object[] modifyUserNameParams = new Object[]{patchUserReq.getUserName(), patchUserReq.getProfileImgUrl(), userIdx};
 
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
