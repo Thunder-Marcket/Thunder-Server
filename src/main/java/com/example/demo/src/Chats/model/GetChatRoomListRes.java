@@ -8,5 +8,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetChatRoomListRes {
-
+    private String storeImageUrl;
+    private String storeName;
+    private String period;
+    private String lastChat;
+    private int itemIdx;
+    private int chatRoomIdx;
+    private int storeUserIdx;
 }

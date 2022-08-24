@@ -17,7 +17,7 @@ public class GetItemInfoRes {
     private List<GetItemListRes> storeItemList;
     private List<GetItemListRes> similarItemList;
     private List<Comments> commentList;
-    private int cost;
+    private String cost;
     private String itemName;
     private String address;
     private String period;
