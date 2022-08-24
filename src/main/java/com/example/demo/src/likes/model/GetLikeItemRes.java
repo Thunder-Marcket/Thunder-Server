@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GetLikeItemRes {
     private int itemIdx;
     private String itemName;
-    private int cost;
+    private String cost;
     private String userName;
     private String status;
     private int isSafePayment;
