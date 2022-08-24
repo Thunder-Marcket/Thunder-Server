@@ -73,24 +73,18 @@ public class UserProvider {
     }
 
     public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
-        User user = userDao.getPwd(postLoginReq);
-        String encryptPwd;
-        try {
-            encryptPwd=new SHA256().encrypt(postLoginReq.getPassword());
-        } catch (Exception ignored) {
-            throw new BaseException(PASSWORD_DECRYPTION_ERROR);
+        String phoneNum = postLoginReq.getPhoneNumber();
+        if(userDao.checkPhoneNum(phoneNum) == 0){
+            throw new BaseException(NOT_EXIST_USER);
         }
-
-        if(user.getPassword().equals(encryptPwd)){
+        User user = userDao.getUser(postLoginReq);
+        try {
             int userIdx = user.getUserIdx();
             String jwt = jwtService.createJwt(userIdx);
-            return new PostLoginRes(userIdx,jwt);
+            return new PostLoginRes(userIdx, jwt);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
-        else{
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-
     }
-
 }
 

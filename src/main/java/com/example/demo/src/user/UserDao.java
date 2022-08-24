@@ -66,12 +66,12 @@ public class UserDao {
     }
 
 
-    public int checkPhoneNum(String phoneNumber) {
-        String checkEmailQuery = "select exists(select phoneNumber from Users where phoneNumber = ?)";
-        String checkEmailParams = phoneNumber;
-        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+    public int checkPhoneNum(String phoneNum) {
+        String checkPhoneNumQuery = "select exists(select phoneNumber from Users where phoneNumber = ?)";
+        String checkPhoneNumParams = phoneNum;
+        return this.jdbcTemplate.queryForObject(checkPhoneNumQuery,
                 int.class,
-                checkEmailParams);
+                checkPhoneNumParams);
     }
 
     public int checkUserName(String userName) {
@@ -89,22 +89,34 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-    public User getPwd(PostLoginReq postLoginReq){
-        String getPwdQuery = "select userIdx, password,email,userName,ID from UserInfo where ID = ?";
-        String getPwdParams = postLoginReq.getId();
+//    public User getPwd(PostLoginReq postLoginReq){
+//        String getPwdQuery = "select userIdx, password,email,userName,ID from UserInfo where ID = ?";
+//        String getPwdParams = postLoginReq.getId();
+//
+//        return this.jdbcTemplate.queryForObject(getPwdQuery,
+//                (rs,rowNum)-> new User(
+//                        rs.getInt("userIdx"),
+//                        rs.getString("ID"),
+//                        rs.getString("userName"),
+//                        rs.getString("password"),
+//                        rs.getString("email")
+//                ),
+//                getPwdParams
+//                );
+//
+//    }
 
-        return this.jdbcTemplate.queryForObject(getPwdQuery,
-                (rs,rowNum)-> new User(
+    public User getUser(PostLoginReq postLoginReq) {
+        String getUserQuery =
+                "select userIdx, phoneNumber\n" +
+                "from Users\n" +
+                "where phoneNumber = ?";
+        Object[] getUserParams = new Object[]{postLoginReq.getPhoneNumber()};
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new User(
                         rs.getInt("userIdx"),
-                        rs.getString("ID"),
-                        rs.getString("userName"),
-                        rs.getString("password"),
-                        rs.getString("email")
-                ),
-                getPwdParams
-                );
-
+                        rs.getString("phoneNumber")),
+                getUserParams);
     }
-
 }
 
