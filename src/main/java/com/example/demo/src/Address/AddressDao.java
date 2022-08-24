@@ -18,7 +18,16 @@ public class AddressDao {
     }
 
     public List<GetAddressRes> getAddress(int userIdx) {
-        String getAddressQuery = "";
+        String getAddressQuery = "select\n" +
+                "    A.name AS userName,\n" +
+                "    A.address,\n" +
+                "    A.detailAddress,\n" +
+                "    A.phoneNumber,\n" +
+                "    A.isBaseAddress\n" +
+                "from Addresss A\n" +
+                "inner join Users U on A.userIdx = U.userIdx\n" +
+                "\n" +
+                "where A.userIdx = ?";
         int getAddressParams = userIdx;
 
         return this.jdbcTemplate.query(getAddressQuery,

@@ -1,0 +1,16 @@
+package com.example.demo.src.Address.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class PostAddressRes {
+    private String userName;
+    private String address;
+    private String detailAddress;
+    private String phoneNumber;
+    private int isBaseAddress;
+}

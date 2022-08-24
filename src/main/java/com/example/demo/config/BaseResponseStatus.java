@@ -36,6 +36,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_PHONENUM( false, 2020 , "중복된 전화번호입니다."),
     POST_USERS_EXISTS_NAME( false, 2021 , "이미 존재하는 이름입니다." ),
 
+    
 
     /**
      * 3000 : Response 오류

@@ -3,15 +3,15 @@ package com.example.demo.src.Address;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Address.model.GetAddressRes;
+import com.example.demo.src.Address.model.PostAddressReq;
+import com.example.demo.src.Address.model.PostAddressRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,5 +50,18 @@ public class AddressController {
         }
     }
 
+
+    /**
+     * 배송지 추가 API
+     * [POST] /addresses
+     * @return BaseResponse<List<PostAddressRes>>
+     */
+    @ResponseBody
+    @PostMapping("/create")
+    public BaseResponse<List<PostAddressRes>> createAddress(@RequestBody PostAddressReq postAddressReq){
+        if(postAddressReq.getPhoneNumber() == null){
+            return new BaseResponse<>(BaseResponseStatus.POST_ADDRESSES_EMPTY_PHONENUM);
+        }
+    }
 
 }
