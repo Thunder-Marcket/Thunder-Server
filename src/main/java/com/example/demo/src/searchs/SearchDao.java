@@ -15,12 +15,12 @@ public class SearchDao {
     private JdbcTemplate jdbcTemplate;
 
     public List<GetSearchesRes> getSearches(int userIdx) {
-        String getSearchesQuery =
-                "select u.userIdx, searchText\n" +
-                        "from Users u\n" +
-                        "join Searchs s on u.userIdx = s.userIdx\n" +
-                        "where u.userIdx = ?\n" +
-                        "order by s.updatedAt desc;";
+        String getSearchesQuery = "select u.userIdx, searchText\n" +
+                "from Users u\n" +
+                "join Searchs s on u.userIdx = s.userIdx\n" +
+                "where u.userIdx = ?\n" +
+                "order by s.updatedAt desc;";
+
         int getSearchesParams = userIdx;
         return this.jdbcTemplate.query(getSearchesQuery,
                 (rs, rowNum) -> new GetSearchesRes(

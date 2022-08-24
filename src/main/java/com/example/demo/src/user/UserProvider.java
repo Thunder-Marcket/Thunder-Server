@@ -5,11 +5,9 @@ package com.example.demo.src.user;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.SHA256;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,30 +24,37 @@ public class UserProvider {
     private final UserDao userDao;
     private final JwtService jwtService;
 
-    public List<GetUserRes> getUsers() throws BaseException{
-        try{
-            List<GetUserRes> getUserRes = userDao.getUsers();
-            return getUserRes;
-        }
-        catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
+//    public List<GetUserRes> getUsers() throws BaseException{
+//        try{
+//            List<GetUserRes> getUserRes = userDao.getUsers();
+//            return getUserRes;
+//        }
+//        catch (Exception exception) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//    }
 
-    public List<GetUserRes> getUsersByEmail(String email) throws BaseException{
-        try{
-            List<GetUserRes> getUsersRes = userDao.getUsersByEmail(email);
-            return getUsersRes;
-        }
-        catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-    public PatchUserRes getUser(int userIdx) throws BaseException {
+    public GetUserRes getUser(int userIdx) throws BaseException {
         try {
-            PatchUserRes getUserRes = userDao.getUser(userIdx);
+            GetUserRes getUserRes = userDao.getUser(userIdx);
+            return getUserRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetUserItemRes> getUserItems(int userIdx, int salesStatus) throws BaseException {
+        try {
+            List<GetUserItemRes> getUserItemResList = userDao.getUserItems(userIdx, salesStatus);
+            return getUserItemResList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PatchUserRes getModifiedUser(int userIdx) throws BaseException {
+        try {
+            PatchUserRes getUserRes = userDao.getModifiedUser(userIdx);
             return getUserRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -68,21 +73,6 @@ public class UserProvider {
         try{
             return userDao.checkUserName(userName);
         } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
-        String phoneNum = postLoginReq.getPhoneNumber();
-        if(userDao.checkPhoneNum(phoneNum) == 0){
-            throw new BaseException(NOT_EXIST_USER);
-        }
-        User user = userDao.getUser(postLoginReq);
-        try {
-            int userIdx = user.getUserIdx();
-            String jwt = jwtService.createJwt(userIdx);
-            return new PostLoginRes(userIdx, jwt);
-        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

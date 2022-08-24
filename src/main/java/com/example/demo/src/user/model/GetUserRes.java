@@ -10,10 +10,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetUserRes {
-    private int userIdx;
+    private String profileImgUrl;
     private String userName;
-    private String ID;
-    private String email;
-    private String password;
+    private int grade;
+    private int isSelfVerification;
+    private int likeCnt;
+    private int commentCnt;
+    private int followerCnt;
+    private int followingCnt;
 }
 

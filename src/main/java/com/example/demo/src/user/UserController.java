@@ -11,11 +11,10 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
-
 import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 import static com.example.demo.utils.ValidationRegex.isRegexPhoneNum;
 
 @AllArgsConstructor
@@ -55,24 +54,30 @@ public class UserController {
 //        }
 //    }
 
-//    /**
-//     * 회원 1명 조회 API
-//     * [GET] /users/:userIdx
-//     * @return BaseResponse<GetUserRes>
-//     */
-//    // Path-variable
-//    @ResponseBody
-//    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
-//    public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {
-//        // Get Users
-//        try{
-//            GetUserRes getUserRes = userProvider.getUser(userIdx);
-//            return new BaseResponse<>(getUserRes);
-//        } catch(BaseException exception){
-//            return new BaseResponse<>((exception.getStatus()));
-//        }
-//
-//    }
+    /**
+     * 회원 1명 조회 API
+     * [GET] /users/:userIdx ?salesStatus=
+     * @return BaseResponse<GetUserRes>
+     */
+    // Path-variable
+    @ResponseBody
+    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    public BaseResponse<GetMyPageRes> getUser(@PathVariable("userIdx") int userIdx,
+                                              @RequestParam int salesStatus) {
+        try{
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetUserRes getUserRes = userProvider.getUser(userIdx);
+            List<GetUserItemRes> getUserItemResList = userProvider.getUserItems(userIdx, salesStatus);
+            GetMyPageRes getMyPageRes = new GetMyPageRes(getUserRes, getUserItemResList);
+            return new BaseResponse<>(getMyPageRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
 
     /**
      * 회원가입 API
@@ -106,7 +111,7 @@ public class UserController {
     @PostMapping("/logIn")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) throws BaseException {
         try{
-            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
+            PostLoginRes postLoginRes = userService.logIn(postLoginReq);
             return new BaseResponse<>(postLoginRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -122,9 +127,7 @@ public class UserController {
     @PatchMapping("/{userIdx}")
     public BaseResponse<PatchUserRes> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody PatchUserReq patchUserReq){
         try {
-            //jwt에서 idx 추출.
             int userIdxByJwt = jwtService.getUserIdx();
-            //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }

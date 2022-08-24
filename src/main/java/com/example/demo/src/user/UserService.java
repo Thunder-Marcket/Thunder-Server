@@ -6,7 +6,6 @@ package com.example.demo.src.user;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.SHA256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +50,21 @@ public class UserService {
         }
     }
 
+    public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
+        String phoneNum = postLoginReq.getPhoneNumber();
+        if(userDao.checkPhoneNum(phoneNum) == 0){
+            throw new BaseException(NOT_EXIST_USER);
+        }
+        User user = userDao.getModifiedUser(postLoginReq);
+        try {
+            int userIdx = user.getUserIdx();
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostLoginRes(userIdx, jwt);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public PatchUserRes modifyUserName(int userIdx, PatchUserReq patchUserReq) throws BaseException {
         if (userProvider.checkUserName(patchUserReq.getUserName()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_NAME);
@@ -60,7 +74,7 @@ public class UserService {
             throw new BaseException(MODIFY_FAIL_USER);
         }
         try{
-            PatchUserRes patchUserRes = userProvider.getUser(userIdx);
+            PatchUserRes patchUserRes = userProvider.getModifiedUser(userIdx);
             return patchUserRes;
         } catch(Exception exception){
             throw new BaseException(DATABASE_ERROR);

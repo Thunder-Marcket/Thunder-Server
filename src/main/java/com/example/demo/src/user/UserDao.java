@@ -4,11 +4,9 @@ package com.example.demo.src.user;
 
 import com.example.demo.src.user.model.*;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,32 +15,68 @@ public class UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    public List<GetUserRes> getUsers(){
-        String getUsersQuery = "select * from UserInfo";
-        return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password"))
-                );
-    }
+//    public List<GetUserRes> getUsers(){
+//        String getUsersQuery = "select * from UserInfo";
+//        return this.jdbcTemplate.query(getUsersQuery,
+//                (rs,rowNum) -> new GetUserRes(
+//                        rs.getInt("userIdx"),
+//                        rs.getString("userName"),
+//                        rs.getString("ID"),
+//                        rs.getString("Email"),
+//                        rs.getString("password"))
+//                );
+//    }
 
-    public List<GetUserRes> getUsersByEmail(String email){
-        String getUsersByEmailQuery = "select * from UserInfo where email =?";
-        String getUsersByEmailParams = email;
-        return this.jdbcTemplate.query(getUsersByEmailQuery,
+
+    public GetUserRes getUser(int userIdx) {
+        String getUserQuery =
+                "select profileImgUrl, userName, grade, isSelfVerification\n" +
+                "     , case when likeCnt > 0 then likeCnt else 0 end as likeCnt\n" +
+                "     , case when commentCnt > 0 then commentCnt else 0 end as commentCnt\n" +
+                "     , case when followerCnt > 0 then followerCnt else 0 end as followerCnt\n" +
+                "     , case when followingCnt > 0 then followingCnt else 0 end as followingCnt\n" +
+                "\n" +
+                "from (\n" +
+                "    select profileImgUrl, userName, grade, isSelfVerification, userIdx\n" +
+                "    from Users\n" +
+                "    where userIdx = ? \n" +
+                ") u\n" +
+                "left join (\n" +
+                "    select count(likeIdx) as likeCnt, l.userIdx\n" +
+                "    from Likes l\n" +
+                "        join Items i on i.itemIdx = l.itemIdx\n" +
+                "    group by l.userIdx\n" +
+                ") ll on u.userIdx = ll.userIdx\n" +
+                "left join (\n" +
+                "    select count(commentIdx) as commentCnt, sellUserIdx\n" +
+                "    from Comments c\n" +
+                "    group by c.sellUserIdx\n" +
+                ") c on c.sellUserIdx = u.userIdx\n" +
+                "left join (\n" +
+                "    select count(followerUserIdx) as followerCnt, followingUserIdx\n" +
+                "    from Follows f\n" +
+                "    group by f.followingUserIdx\n" +
+                ") f on f.followingUserIdx = u.userIdx\n" +
+                "left join (\n" +
+                "    select count(followingUserIdx) as followingCnt, followerUserIdx\n" +
+                "    from Follows f\n" +
+                "    group by f.followerUserIdx\n" +
+                ") ff on ff.followerUserIdx = u.userIdx;";
+        int getUserParam = userIdx;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
+                        rs.getString("profileImgUrl"),
                         rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password")),
-                getUsersByEmailParams);
+                        rs.getInt("grade"),
+                        rs.getInt("isSelfVerification"),
+                        rs.getInt("likeCnt"),
+                        rs.getInt("commentCnt"),
+                        rs.getInt("followerCnt"),
+                        rs.getInt("followingCnt")),
+                getUserParam);
     }
 
-    public PatchUserRes getUser(int userIdx){
+    public PatchUserRes getModifiedUser(int userIdx){
         String getUserQuery =
                 "select userIdx, userName, profileImgUrl\n" +
                 "from Users\n" +
@@ -90,24 +124,7 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-//    public User getPwd(PostLoginReq postLoginReq){
-//        String getPwdQuery = "select userIdx, password,email,userName,ID from UserInfo where ID = ?";
-//        String getPwdParams = postLoginReq.getId();
-//
-//        return this.jdbcTemplate.queryForObject(getPwdQuery,
-//                (rs,rowNum)-> new User(
-//                        rs.getInt("userIdx"),
-//                        rs.getString("ID"),
-//                        rs.getString("userName"),
-//                        rs.getString("password"),
-//                        rs.getString("email")
-//                ),
-//                getPwdParams
-//                );
-//
-//    }
-
-    public User getUser(PostLoginReq postLoginReq) {
+    public User getModifiedUser(PostLoginReq postLoginReq) {
         String getUserQuery =
                 "select userIdx, phoneNumber\n" +
                 "from Users\n" +
@@ -118,6 +135,46 @@ public class UserDao {
                         rs.getInt("userIdx"),
                         rs.getString("phoneNumber")),
                 getUserParams);
+    }
+
+    public List<GetUserItemRes> getUserItems(int userIdx, int salesStatus) {
+        String getUserItemsQuery =
+                "select itemIdx, itemName, concat(cost,'원') as cost,\n" +
+                "       (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
+                "                                                                    from Images\n" +
+                "                                                                        inner join ItemImages ii on Images.itemImageIdx = ii.itemImageIdx\n" +
+                "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
+                "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl,\n" +
+                "       salesStatus, isSafePayment,\n" +
+                "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
+                "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(minute, i.updatedAt, current_timestamp),' 분 전')\n" +
+                "        when timestampdiff(hour , i.updatedAt, current_timestamp) <24\n" +
+                "        then concat(timestampdiff(hour, i.updatedAt, current_timestamp),' 시간 전')\n" +
+                "        else concat(datediff( current_timestamp, i.updatedAt),' 일 전')\n" +
+                "    end                                      as uploadTime,\n" +
+                "       itemCnt\n" +
+                "from (select userIdx from Users) u\n" +
+                "    left join Items i on i.userIdx = u.userIdx\n" +
+                "    left join (\n" +
+                "        select count(itemIdx) as itemCnt, u.userIdx\n" +
+                "        from Users u\n" +
+                "            left join Items I on u.userIdx = I.userIdx\n" +
+                "        group by u.userIdx\n" +
+                ") ic on ic.userIdx = u.userIdx\n" +
+                "where u.userIdx = ? and salesStatus = ?;";
+        Object[] getUserItemsParams = new Object[]{userIdx, salesStatus};
+        return this.jdbcTemplate.query(getUserItemsQuery,
+                (rs, rowNum) -> new GetUserItemRes(
+                        rs.getInt("itemIdx"),
+                        rs.getString("itemName"),
+                        rs.getString("imageUrl"),
+                        rs.getString("cost"),
+                        rs.getInt("isSafePayment"),
+                        rs.getString("uploadTime"),
+                        rs.getInt("itemCnt")),
+                getUserItemsParams);
     }
 }
 
