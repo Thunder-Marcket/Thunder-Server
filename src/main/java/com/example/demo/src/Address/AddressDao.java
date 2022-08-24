@@ -47,6 +47,8 @@ public class AddressDao {
         Object[] createAddressParams = new Object[]{};
 
 
+        this.jdbcTemplate.update(createAddressQuery, createAddressParams);
+
         String getAddressQuery = "select\n" +
                 "    A.name AS userName,\n" +
                 "    A.address,\n" +

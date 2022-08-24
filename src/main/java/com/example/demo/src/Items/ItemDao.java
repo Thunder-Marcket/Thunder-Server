@@ -172,7 +172,10 @@ public class ItemDao {
                 "       I.isCanExchange,\n" +
                 "       I.isIncludeOrderTip,\n" +
                 "       I.isUsed,\n" +
-                "       I.itemContent,\n" +
+                "       case\n" +
+                "           when I.itemContent is null then '상품 내용 소개 없음'\n" +
+                "            ELSE I.itemContent\n" +
+                "        END AS itemContent,\n" +
                 "       (select count(SaleViews.viewItemIdx) from SaleViews where SaleViews.itemIdx = I.itemIdx) AS viewCount,\n" +
                 "       (select count(ChatRooms.chatRoomIdx) from ChatRooms where I.itemIdx = ChatRooms.itemIdx) AS chatCount,\n" +
                 "       I.userIdx,\n" +
@@ -180,7 +183,11 @@ public class ItemDao {
                 "       exists(select followerUserIdx from Follows F where F.followingUserIdx = I.userIdx AND F.followerUserIdx = ?) AS isFollowCheck,\n" +
                 "       (select avg(C.star) from Comments C where C.sellUserIdx = I.userIdx) AS star,\n" +
                 "       (select count(Items.itemIdx) from Items where Items.itemIdx IN (select Items.itemIdx from Items where Items.userIdx = I.userIdx)) AS storeItemCount,\n" +
-                "       (select Users.profileImgUrl from Users where Users.userIdx = I.userIdx) AS storeImageUrl,\n" +
+                "       (select\n" +
+                "            case\n" +
+                "                when Users.profileImgUrl is null then '이미지 없음'\n" +
+                "                ELSE Users.profileImgUrl\n" +
+                "            END from Users where Users.userIdx = I.userIdx) AS storeImageUrl,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isSafePayment,\n" +
                 "       (select count(Comments.buyUserIdx) from Comments where Comments.sellUserIdx = I.userIdx) AS commentCount\n" +
@@ -325,11 +332,23 @@ public class ItemDao {
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
                 "        END AS period,\n" +
-                "       (select Images.imageUrl from Images\n" +
+                "\n" +
+                "      case\n" +
+                "          when (select\n" +
+                "            Images.imageUrl\n" +
+                "             from Images\n" +
                 "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
                 "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
                 "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
-                "                                                                      where I2.itemIdx = I.itemIdx)) AS imageUrl,\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx)) is null then '이미지 없음'\n" +
+                "          ELSE (select\n" +
+                "            Images.imageUrl\n" +
+                "             from Images\n" +
+                "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
+                "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
+                "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx))\n" +
+                "        END imageUrl,\n" +
                 "       I.isSafePayment,\n" +
                 "       case\n" +
                 "           when (select 1 from Likes inner join Users U on Likes.userIdx = U.userIdx\n" +
@@ -385,9 +404,15 @@ public class ItemDao {
                 "           ELSE concat(datediff(now(), C.createdAt), '일 전')\n" +
                 "        END AS period,\n" +
                 "       C.commentText,\n" +
-                "       (select I2.imageUrl from CommentImages CI\n" +
-                "               inner join Images I2 on CI.commentImageIdx = I2.commentImageIdx\n" +
-                "               where C.commentIdx = CI.commentIdx) AS imageUrl\n" +
+                "       case\n" +
+                "           when (select I2.imageUrl from CommentImages CI\n" +
+                "                                    inner join Images I2 on CI.commentImageIdx = I2.commentImageIdx\n" +
+                "                                    where C.commentIdx = CI.commentIdx) is null\n" +
+                "                then '이미지 없음'\n" +
+                "           ELSE (select I2.imageUrl from CommentImages CI\n" +
+                "                                    inner join Images I2 on CI.commentImageIdx = I2.commentImageIdx\n" +
+                "                                    where C.commentIdx = CI.commentIdx)\n" +
+                "       END AS imageUrl\n" +
                 "\n" +
                 "\n" +
                 "from Items I\n" +
