@@ -12,6 +12,7 @@ public class GetLikeItemRes {
     private String itemName;
     private int cost;
     private String userName;
+    private String status;
     private String uploadTime;
     private String imageUrl;
 }

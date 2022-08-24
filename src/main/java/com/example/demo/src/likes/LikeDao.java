@@ -49,6 +49,7 @@ public class LikeDao {
                         rs.getString("itemName"),
                         rs.getInt("cost"),
                         rs.getString("userName"),
+                        rs.getString("status"),
                         rs.getString("uploadTime"),
                         rs.getString("imageUrl")),
                 getLikeItemsParams);
