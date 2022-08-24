@@ -3,6 +3,7 @@ package com.example.demo.src.Address;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Address.model.GetAddressRes;
+import com.example.demo.src.Address.model.PostAddressReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,14 @@ public class AddressProvier {
             throw new BaseException(DATABASE_ERROR);
         }
 
+    }
+
+    // 중복 체크
+    public int checkAddress(PostAddressReq postAddressReq) throws BaseException{
+        try{
+            return addressDao.checkAddress(postAddressReq);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }

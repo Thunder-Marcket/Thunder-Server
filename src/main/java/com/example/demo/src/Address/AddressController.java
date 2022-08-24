@@ -77,7 +77,21 @@ public class AddressController {
         if(postAddressReq.getDetailAddress() == null){
             return new BaseResponse<>(POST_ADDRESSES_EMPTY_DETAIL_ADDRESS);
         }
+
+        if(postAddressReq.getPhoneNumber().length() != 11){
+            return new BaseResponse<>(POST_ADDRESSES_INVAILD_PHONEBUM);
+        }
+        if(!postAddressReq.getPhoneNumber().matches("^([0-9]*)$")){
+            return new BaseResponse<>(POST_ADDRESSES_INVAILD_PHONEBUM);
+        }
+
         try{
+            int userIdxByJwt = jwtService.getUserIdx();
+
+            if(userIdxByJwt != postAddressReq.getUserIdx()){
+                throw new BaseException(INVALID_JWT);
+            }
+
             List<PostAddressRes> postAddressRes = addressService.createAddress(postAddressReq);
             return new BaseResponse<>(postAddressRes);
         } catch (BaseException exception){

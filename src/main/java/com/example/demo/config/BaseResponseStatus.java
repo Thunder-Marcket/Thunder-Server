@@ -43,6 +43,9 @@ public enum BaseResponseStatus {
     POST_ADDRESSES_EMPTY_USERNAME(false, 2602, "배송지 입력시 이름이 필요합니다."),
     POST_ADDRESSES_EMPTY_ADDRESS(false, 2603, "배송지 입력시 주소가 필요합니다."),
     POST_ADDRESSES_EMPTY_DETAIL_ADDRESS(false, 2604, "배송지 입력시 상세 주소가 필요합니다."),
+    POST_ADDRESSES_INVAILD_PHONEBUM(false, 2605, "전화번호를 올바르게 입력해주세요."),
+    POST_ADDRESSES_EXISTS_ADDRESS(false, 2606, "중복된 주소입니다."),
+    POST_ADDRESSES_INVALID_ADDRESS(false, 2607, "잘못된 형식의 입력입니다."),
 
 
     /**

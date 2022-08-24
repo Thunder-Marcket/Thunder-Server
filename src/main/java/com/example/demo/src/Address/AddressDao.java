@@ -43,8 +43,15 @@ public class AddressDao {
     }
 
     public List<PostAddressRes> createAddress(PostAddressReq postAddressReq) {
-        String createAddressQuery = "";
-        Object[] createAddressParams = new Object[]{};
+        String createAddressQuery = "insert into Addresss (`name` ,address, detailAddress, phoneNumber, isBaseAddress, userIdx) VALUES (?,?,?,?,?,?);";
+        Object[] createAddressParams = new Object[]{
+                postAddressReq.getUserName(),
+                postAddressReq.getAddress(),
+                postAddressReq.getDetailAddress(),
+                postAddressReq.getPhoneNumber(),
+                postAddressReq.getIsBaseAddress(),
+                postAddressReq.getUserIdx()
+        };
 
 
         this.jdbcTemplate.update(createAddressQuery, createAddressParams);
@@ -69,5 +76,25 @@ public class AddressDao {
                         rs.getString("phoneNumber"),
                         rs.getInt("isBaseAddress")
                 ), getAddressParams);
+    }
+
+    public int checkAddress(PostAddressReq postAddressReq) {
+        String checkAddressQuery = "select exists(select addressIdx from Addresss\n" +
+                "                                where address = ?\n" +
+                "                                AND detailAddress = ?\n" +
+                "                                AND `name` = ?\n" +
+                "                                AND phoneNumber = ?\n" +
+                "                                AND userIdx = ?)";
+        Object[] checkAddressParams = new Object[]{
+                postAddressReq.getAddress(),
+                postAddressReq.getDetailAddress(),
+                postAddressReq.getUserName(),
+                postAddressReq.getPhoneNumber(),
+                postAddressReq.getUserIdx()
+        };
+
+        return this.jdbcTemplate.queryForObject(checkAddressQuery,
+                int.class,
+                checkAddressParams);
     }
 }
