@@ -14,7 +14,7 @@ import java.util.List;
 public class GetItemInfoRes {
     private List<String> imageUrlList;
     private List<String> tagList;
-    private List<GetItemListRes> storeItemList;
+    //private List<GetItemListRes> storeItemList;
     private List<GetItemListRes> similarItemList;
     private List<Comments> commentList;
     private String cost;

@@ -195,7 +195,7 @@ public class ItemDao {
                 (rs, rowNum) -> new GetItemInfoRes(
                         getImageUrl(itemIdx),
                         getTagList(itemIdx),
-                        getStoreItemListRes(buyUserIdx, itemIdx),
+                        //getStoreItemListRes(buyUserIdx, itemIdx),
                         getSimilarItemListRes(buyUserIdx, itemIdx),
                         getCommentList(itemIdx),
                         rs.getString("cost"),

@@ -36,7 +36,14 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_PHONENUM( false, 2020 , "중복된 전화번호입니다."),
     POST_USERS_EXISTS_NAME( false, 2021 , "이미 존재하는 이름입니다." ),
 
-    
+
+
+    // [POST] /addresses
+    POST_ADDRESSES_EMPTY_PHONENUM(false, 2601, "배송지 입력시 전화번호가 필요합니다."),
+    POST_ADDRESSES_EMPTY_USERNAME(false, 2602, "배송지 입력시 이름이 필요합니다."),
+    POST_ADDRESSES_EMPTY_ADDRESS(false, 2603, "배송지 입력시 주소가 필요합니다."),
+    POST_ADDRESSES_EMPTY_DETAIL_ADDRESS(false, 2604, "배송지 입력시 상세 주소가 필요합니다."),
+
 
     /**
      * 3000 : Response 오류
