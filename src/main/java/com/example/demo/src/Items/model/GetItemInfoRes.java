@@ -23,7 +23,7 @@ public class GetItemInfoRes {
     private String period;
     private int isLike;
     private int likeCount;
-    private int itemCount;
+    private String itemCount;
     private int isCanExchange;
     private int isIncludeOrderTip;
     private int isUsed;

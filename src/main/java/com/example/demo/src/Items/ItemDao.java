@@ -168,7 +168,7 @@ public class ItemDao {
                 "        END isLike,\n" +
                 "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCount,\n" +
                 "\n" +
-                "       I.itemCount,\n" +
+                "       concat(I.itemCount, '개') AS itemCount,\n" +
                 "       I.isCanExchange,\n" +
                 "       I.isIncludeOrderTip,\n" +
                 "       I.isUsed,\n" +
@@ -204,7 +204,7 @@ public class ItemDao {
                         rs.getString("period"),
                         rs.getInt("isLike"),
                         rs.getInt("likeCount"),
-                        rs.getInt("itemCount"),
+                        rs.getString("itemCount"),
                         rs.getInt("isCanExchange"),
                         rs.getInt("isIncludeOrderTip"),
                         rs.getInt("isUsed"),
