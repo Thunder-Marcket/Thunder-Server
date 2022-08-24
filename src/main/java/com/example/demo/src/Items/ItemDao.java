@@ -30,7 +30,7 @@ public class ItemDao {
     // 추천 상품 가져오는 쿼리...
     public List<GetItemListRes> getNewItems(int userIdx) {
         String getItemQuery = "select I.itemIdx,\n" +
-                "       I.cost,\n" +
+                "       concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
                 "           when I.address is null then '지역정보 없음'\n" +
@@ -66,7 +66,7 @@ public class ItemDao {
         return this.jdbcTemplate.query(getItemQuery,
                 (rs, rowNum) -> new GetItemListRes(
                         rs.getInt("itemIdx"),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getString("itemName"),
                         rs.getString("address"),
                         rs.getString("period"),
@@ -91,7 +91,7 @@ public class ItemDao {
 
 
         String getSearchItemQuery = "select I.itemIdx,\n" +
-                "       I.cost,\n" +
+                "       concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
                 "           when I.address is null then '지역정보 없음'\n" +
@@ -132,7 +132,7 @@ public class ItemDao {
         return this.jdbcTemplate.query(getSearchItemQuery,
                 (rs, rowNum) -> new GetItemListRes(
                         rs.getInt("itemIdx"),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getString("itemName"),
                         rs.getString("address"),
                         rs.getString("period"),
@@ -149,7 +149,7 @@ public class ItemDao {
 
     // 상세 상품 정보 가져오기
     public GetItemInfoRes getItemInfo(int buyUserIdx, int itemIdx) {
-        String getItemInfoQuery = "select I.cost,\n" +
+        String getItemInfoQuery = "select concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
                 "           when I.address is null then '지역정보 없음'\n" +
@@ -198,7 +198,7 @@ public class ItemDao {
                         getStoreItemListRes(buyUserIdx, itemIdx),
                         getSimilarItemListRes(buyUserIdx, itemIdx),
                         getCommentList(itemIdx),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getString("itemName"),
                         rs.getString("address"),
                         rs.getString("period"),
@@ -257,7 +257,7 @@ public class ItemDao {
     // 해당 상점의 상품 리스트 가져오기
     public List<GetItemListRes> getStoreItemListRes(int buyUserIdx, int itemIdx){
         String getStoreItemListQuery = "select I.itemIdx,\n" +
-                "       I.cost,\n" +
+                "       concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
                 "           when I.address is null then '지역정보 없음'\n" +
@@ -298,7 +298,7 @@ public class ItemDao {
         return this.jdbcTemplate.query(getStoreItemListQuery,
                 (rs, rowNum) -> new GetItemListRes(
                         rs.getInt("itemIdx"),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getString("itemName"),
                         rs.getString("address"),
                         rs.getString("period"),
@@ -315,7 +315,7 @@ public class ItemDao {
     // 비슷한 상품 가져오기(상품 idx를 통해 상품의 태그 중 브랜드, 카테고리 테그를 가지고 검색)
     public List<GetItemListRes> getSimilarItemListRes(int buyUserIdx, int itemIdx){
         String getSimilarItemListQuery = "select I.itemIdx,\n" +
-                "       I.cost,\n" +
+                "       concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
                 "           when I.address is null then '지역정보 없음'\n" +
@@ -358,7 +358,7 @@ public class ItemDao {
         return this.jdbcTemplate.query(getSimilarItemListQuery,
                 (rs, rowNum) -> new GetItemListRes(
                         rs.getInt("itemIdx"),
-                        rs.getInt("cost"),
+                        rs.getString("cost"),
                         rs.getString("itemName"),
                         rs.getString("address"),
                         rs.getString("period"),

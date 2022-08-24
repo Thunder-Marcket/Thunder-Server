@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetItemListRes {
     private int itemIdx;
-    private int cost;
+    private String cost;
     private String itemName;
     private String address;
     private String period;
