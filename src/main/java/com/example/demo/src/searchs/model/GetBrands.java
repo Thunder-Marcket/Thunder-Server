@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetBrands {
     private String brandName;
-    private String status;
+    private int isFollowing;
 }
