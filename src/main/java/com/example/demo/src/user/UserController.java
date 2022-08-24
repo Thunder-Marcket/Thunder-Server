@@ -1,6 +1,7 @@
 
 package com.example.demo.src.user;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -17,6 +18,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 import static com.example.demo.utils.ValidationRegex.isRegexPhoneNum;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/app/users")
 public class UserController {
@@ -28,15 +30,6 @@ public class UserController {
     private final UserService userService;
     @Autowired
     private final JwtService jwtService;
-
-
-
-
-    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService){
-        this.userProvider = userProvider;
-        this.userService = userService;
-        this.jwtService = jwtService;
-    }
 
     /**
      * 회원 조회 API
@@ -83,7 +76,7 @@ public class UserController {
 
     /**
      * 회원가입 API
-     * [POST] /users
+     * [POST] /users/sign-up
      * @return BaseResponse<PostUserRes>
      */
     // Body

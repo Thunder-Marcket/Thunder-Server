@@ -1,9 +1,8 @@
-package com.example.demo.src.salesViews;
-
+package com.example.demo.src.searchs;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.salesViews.model.GetSalesViewsRes;
+import com.example.demo.src.searchs.model.GetSearchesRes;
 import com.example.demo.utils.JwtService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -17,33 +16,35 @@ import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/sales-views")
-public class SalesViewsController {
+@RequestMapping("/searches")
+public class SearchController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private final SalesViewsProvider salesViewsProvider;
+    private final SearchProvider searchProvider;
     @Autowired
     private final JwtService jwtService;
 
     /**
-     * 최근 본 상품 조회 API
-     * [GET] /sales-views/:userIdx
-     * @return BaseResponse<List < GetSalesViewsRes>>
+     * 최근 검색어 조회 API
+     * [GET] /searches/:userIdx
+     *
+     * @return BaseResponse<List < GetSearchesRes>>
      */
     @ResponseBody
     @GetMapping("/{userIdx}")
-    public BaseResponse<List<GetSalesViewsRes>> getSalesViews(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetSearchesRes>> getSearches(@PathVariable("userIdx") int userIdx) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            List<GetSalesViewsRes> getSalesViewsResList = salesViewsProvider.getSalesViews(userIdx);
-            return new BaseResponse<>(getSalesViewsResList);
+            List<GetSearchesRes> getSearchesResList = searchProvider.getSearches(userIdx);
+            return new BaseResponse<>(getSearchesResList);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
 }

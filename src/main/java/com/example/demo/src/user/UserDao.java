@@ -3,6 +3,7 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.src.user.model.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,15 +11,11 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.List;
 
+@AllArgsConstructor
 @Repository
 public class UserDao {
 
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource){
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     public List<GetUserRes> getUsers(){
         String getUsersQuery = "select * from UserInfo";

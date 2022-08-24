@@ -29,8 +29,7 @@ public class LikeController {
 
     /**
      * 찜 목록 조회 API
-     * [GET] /likes
-     *
+     * [GET] /likes/:userIdx
      * @return Baseresponse<List<GetLikeItemRes>>
      */
     @ResponseBody

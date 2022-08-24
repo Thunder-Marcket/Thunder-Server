@@ -6,6 +6,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +17,14 @@ import java.util.List;
 import static com.example.demo.config.BaseResponseStatus.*;
 
 //Provider : Read의 비즈니스 로직 처리
+@AllArgsConstructor
 @Service
 public class UserProvider {
 
-    private final UserDao userDao;
-    private final JwtService jwtService;
-
-
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public UserProvider(UserDao userDao, JwtService jwtService) {
-        this.userDao = userDao;
-        this.jwtService = jwtService;
-    }
+    private final UserDao userDao;
+    private final JwtService jwtService;
 
     public List<GetUserRes> getUsers() throws BaseException{
         try{
