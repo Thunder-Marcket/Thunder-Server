@@ -14,7 +14,7 @@ public class LikeDao {
 
     // 찜 목록 조회
     public List<GetLikeItemRes> getLikeItems(int userIdx) {
-        String getLikeItemsQuery = "select i.itemIdx, itemName, cost, userName,\n" +
+        String getLikeItemsQuery = "select i.itemIdx, itemName, cost, userName, isSafePayment,\n" +
                 "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
                 "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
                 "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
@@ -30,7 +30,7 @@ public class LikeDao {
                 "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
                 "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl\n" +
                 "from (\n" +
-                "     select itemIdx, itemName, cost, updatedAt, createdAt, userIdx\n" +
+                "     select itemIdx, itemName, cost, updatedAt, createdAt, userIdx, isSafePayment\n" +
                 "    from Items\n" +
                 ") i\n" +
                 "join (\n" +
@@ -50,6 +50,7 @@ public class LikeDao {
                         rs.getInt("cost"),
                         rs.getString("userName"),
                         rs.getString("status"),
+                        rs.getInt("isSafePayment"),
                         rs.getString("uploadTime"),
                         rs.getString("imageUrl")),
                 getLikeItemsParams);
