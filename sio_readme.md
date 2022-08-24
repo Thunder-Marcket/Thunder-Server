@@ -18,4 +18,8 @@
 ## 22.08.23
 - git으로 배포 중 충돌 문제 발생
   - build, .idea, .gradle, log 파일들 .gitignore에 적용하고 sio 브랜치로 업로드 후 빌드 성공
-  - master 브랜치는 여전히 못 쓰는중 
+  - master 브랜치 정상화 
+  - 찜 목록 조회 API 구현
+
+## 22.08.24
+- 
