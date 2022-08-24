@@ -1,5 +1,6 @@
 package com.example.demo.src.searchs;
 
+import com.example.demo.src.searchs.model.GetBrands;
 import com.example.demo.src.searchs.model.GetSearchesRes;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,17 +26,26 @@ public class SearchDao {
                 (rs, rowNum) -> new GetSearchesRes(
                         rs.getInt("userIdx"),
                         rs.getString("searchText"),
-                        getBrandNames()),
+                        getBrandNames(userIdx)),
                 getSearchesParams);
     }
 
-    private List<String> getBrandNames() {
-        String getBrandNames =
-                "select brandName\n" +
-                "from Brands\n" +
+    private List<GetBrands> getBrandNames(int userIdx) {
+        String getBrandNamesQuery =
+                "select brandName,\n" +
+                "       bf.status\n" +
+                "from Brands b\n" +
+                "    left join(\n" +
+                "        select brand_followIdx, followingBrandIdx, followerUserIdx, status\n" +
+                "        from Brand_Follows\n" +
+                "        where followerUserIdx = ? and status = 'enable'\n" +
+                "    ) bf on bf.followingBrandIdx = b.brandIdx\n" +
                 "limit 5;";
-        return this.jdbcTemplate.query(getBrandNames,
-                (rs, rowNum) -> new String(
-                        rs.getString("brandName")));
+        int getBrandNamesParams = userIdx;
+        return this.jdbcTemplate.query(getBrandNamesQuery,
+                (rs, rowNum) -> new GetBrands(
+                        rs.getString("brandName"),
+                        rs.getString("status")),
+                getBrandNamesParams);
     }
 }
