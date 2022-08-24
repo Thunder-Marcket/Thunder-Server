@@ -32,7 +32,10 @@ public class ItemDao {
         String getItemQuery = "select I.itemIdx,\n" +
                 "       I.cost,\n" +
                 "       I.itemName,\n" +
-                "       I.address,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
                 "       case\n" +
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
@@ -90,7 +93,10 @@ public class ItemDao {
         String getSearchItemQuery = "select I.itemIdx,\n" +
                 "       I.cost,\n" +
                 "       I.itemName,\n" +
-                "       I.address,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
                 "       case\n" +
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
@@ -114,7 +120,11 @@ public class ItemDao {
                 "\n" +
                 "from Items I\n" +
                 "\n" +
-                "where instr(I.itemName, ?) or (select instr(T.tagName, ?) from Tags T where T.itemIdx = I.itemIdx)\n" +
+                "where instr(I.itemName, ?) or I.itemIdx IN (select T2.itemIdx from Tags T2\n" +
+                "                                      where T2.tagName IN\n" +
+                "                                            (select Tags.tagName from Tags\n" +
+                "                                                                 inner join Items I on Tags.itemIdx = I.itemIdx\n" +
+                "                                                                 where T2.tagName = ?))\n" +
                 "\n" +
                 "order by I.createdAt DESC;";
         Object[] getSearchItemParam = new Object[]{userIdx, search, search};
@@ -141,7 +151,10 @@ public class ItemDao {
     public GetItemInfoRes getItemInfo(int buyUserIdx, int itemIdx) {
         String getItemInfoQuery = "select I.cost,\n" +
                 "       I.itemName,\n" +
-                "       I.address,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
                 "       case\n" +
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
@@ -246,7 +259,10 @@ public class ItemDao {
         String getStoreItemListQuery = "select I.itemIdx,\n" +
                 "       I.cost,\n" +
                 "       I.itemName,\n" +
-                "       I.address,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
                 "       case\n" +
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
@@ -301,7 +317,10 @@ public class ItemDao {
         String getSimilarItemListQuery = "select I.itemIdx,\n" +
                 "       I.cost,\n" +
                 "       I.itemName,\n" +
-                "       I.address,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
                 "       case\n" +
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
@@ -374,7 +393,7 @@ public class ItemDao {
                 "from Items I\n" +
                 "inner join Users U on I.userIdx = U.userIdx\n" +
                 "inner join Comments C on U.userIdx = C.sellUserIdx\n" +
-                "where I.itemIdx = ?";
+                "where I.itemIdx = ?;";
         int getCommentParams = itemIdx;
 
         return this.jdbcTemplate.query(getCommentQuery,
