@@ -1,6 +1,8 @@
 package com.example.demo.src.searchs;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.searchs.model.GetBrands;
+import com.example.demo.src.searchs.model.GetSearch;
 import com.example.demo.src.searchs.model.GetSearchesRes;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -19,10 +21,19 @@ public class SearchProvider {
 
     private final SearchDao searchDao;
 
-    public List<GetSearchesRes> getSearches(int userIdx) throws BaseException {
+    public List<GetSearch> getSearches(int userIdx) throws BaseException {
         try {
-            List<GetSearchesRes> getSearchesResList = searchDao.getSearches(userIdx);
-            return getSearchesResList;
+            List<GetSearch> getSearches = searchDao.getSearches(userIdx);
+            return getSearches;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetBrands> getBrands(int userIdx) throws BaseException {
+        try {
+            List<GetBrands> getBrands = searchDao.getBrands(userIdx);
+            return getBrands;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
