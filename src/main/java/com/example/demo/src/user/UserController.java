@@ -125,18 +125,37 @@ public class UserController {
      */
     @ResponseBody
     @PatchMapping("/{userIdx}")
-    public BaseResponse<PatchUserRes> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody PatchUserReq patchUserReq){
+    public BaseResponse<PatchUserRes> modifyUser(@PathVariable("userIdx") int userIdx, @RequestBody PatchUserReq patchUserReq){
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            PatchUserRes patchUserRes = userService.modifyUserName(userIdx, patchUserReq);
+            PatchUserRes patchUserRes = userService.modifyUser(userIdx, patchUserReq);
             return new BaseResponse<>(patchUserRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
 
-
+    /**
+     * 유저 탈퇴하기 API
+     * [PATCH] /users/d/:userIdx
+     *
+     * @return BaseResponse<PatchUserStatusRes>
+     */
+    @ResponseBody
+    @PatchMapping("/d/{userIdx}")
+    public BaseResponse<PatchUserRes> modifyUserStatus(@PathVariable("userIdx") int userIdx) throws BaseException {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            PatchUserRes patchUserRes = userService.modifyUserStatus(userIdx);
+            return new BaseResponse<>(patchUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchUserRes {
-    private int userIdx;
+public class PatchUserStatusRes {
+    private int userIdd;
     private String userName;
-    private String profileImgUrl;
     private String status;
 }

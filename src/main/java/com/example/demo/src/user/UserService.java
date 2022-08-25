@@ -55,7 +55,7 @@ public class UserService {
         if(userDao.checkPhoneNum(phoneNum) == 0){
             throw new BaseException(NOT_EXIST_USER);
         }
-        User user = userDao.getModifiedUser(postLoginReq);
+        User user = userProvider.getUserByPhoneNum(phoneNum);
         try {
             int userIdx = user.getUserIdx();
             String jwt = jwtService.createJwt(userIdx);
@@ -65,15 +65,29 @@ public class UserService {
         }
     }
 
-    public PatchUserRes modifyUserName(int userIdx, PatchUserReq patchUserReq) throws BaseException {
+    public PatchUserRes modifyUser(int userIdx, PatchUserReq patchUserReq) throws BaseException {
         if (userProvider.checkUserName(patchUserReq.getUserName()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_NAME);
         }
-        int result = userDao.modifyUserName(userIdx, patchUserReq);
+        int result = userDao.modifyUser(userIdx, patchUserReq);
         if(result == 0){
             throw new BaseException(MODIFY_FAIL_USER);
         }
         try{
+            PatchUserRes patchUserRes = userProvider.getModifiedUser(userIdx);
+            return patchUserRes;
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PatchUserRes modifyUserStatus(int userIdx) throws BaseException {
+        userProvider.isDeleteStatus(userIdx);
+        int result = userDao.modifyUserStatus(userIdx);
+        if (result == 0) {
+            throw new BaseException(MODIFY_FALI_USER_STATUS);
+        }
+        try {
             PatchUserRes patchUserRes = userProvider.getModifiedUser(userIdx);
             return patchUserRes;
         } catch(Exception exception){

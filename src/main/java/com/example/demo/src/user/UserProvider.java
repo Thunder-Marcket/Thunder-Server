@@ -76,5 +76,21 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public User getUserByPhoneNum(String phoneNumber) throws BaseException {
+        try {
+            return userDao.getUserByPhoneNum(phoneNumber);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 탈퇴한 회원인지 확인
+    public void isDeleteStatus(int userIdx) throws BaseException {
+        int result = userDao.checkUserStatus(userIdx);
+        if (result == 0) {
+            throw new BaseException(DELETED_USER);
+        }
+    }
 }
 

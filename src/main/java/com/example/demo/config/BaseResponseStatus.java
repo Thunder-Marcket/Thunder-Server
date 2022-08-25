@@ -36,6 +36,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_PHONENUM( false, 2020 , "중복된 전화번호입니다."),
     POST_USERS_EXISTS_NAME( false, 2021 , "이미 존재하는 이름입니다." ),
 
+    DELETED_USER( false, 2022 , "탈퇴한 유저입니다." ),
 
 
     // [POST] /addresses
@@ -71,6 +72,7 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
 
     MODIFY_FAIL_USER( false, 4015 , "유저 정보 수정 실패" ),
+    MODIFY_FALI_USER_STATUS(false, 4016 , "유저 상태 탈퇴로 수정 실패" ),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

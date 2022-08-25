@@ -78,7 +78,7 @@ public class UserDao {
 
     public PatchUserRes getModifiedUser(int userIdx){
         String getUserQuery =
-                "select userIdx, userName, profileImgUrl\n" +
+                "select userIdx, userName, profileImgUrl, status\n" +
                 "from Users\n" +
                 "where userIdx = ?;";
         int getUserParams = userIdx;
@@ -86,7 +86,8 @@ public class UserDao {
                 (rs, rowNum) -> new PatchUserRes(
                         rs.getInt("userIdx"),
                         rs.getString("userName"),
-                        rs.getString("profileImgUrl")),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("status")),
                 getUserParams);
     }
     
@@ -117,19 +118,19 @@ public class UserDao {
                 checkUserNameParams);
     }
 
-    public int modifyUserName(int userIdx, PatchUserReq patchUserReq){
+    public int modifyUser(int userIdx, PatchUserReq patchUserReq){
         String modifyUserNameQuery = "update Users set userName = ?, profileImgUrl = ? where userIdx = ?";
         Object[] modifyUserNameParams = new Object[]{patchUserReq.getUserName(), patchUserReq.getProfileImgUrl(), userIdx};
 
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-    public User getModifiedUser(PostLoginReq postLoginReq) {
+    public User getUserByPhoneNum(String phoneNumber) {
         String getUserQuery =
                 "select userIdx, phoneNumber\n" +
                 "from Users\n" +
                 "where phoneNumber = ?";
-        Object[] getUserParams = new Object[]{postLoginReq.getPhoneNumber()};
+        String getUserParams = phoneNumber;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new User(
                         rs.getInt("userIdx"),
@@ -175,6 +176,19 @@ public class UserDao {
                         rs.getString("uploadTime"),
                         rs.getInt("itemCnt")),
                 getUserItemsParams);
+    }
+
+    public int modifyUserStatus(int userIdx) {
+        String modifyUserStatusQuery =
+                "update Users set status = 'disable' where userIdx = ? ";
+        int modifyUserStatusParams = userIdx;
+        return this.jdbcTemplate.update(modifyUserStatusQuery, modifyUserStatusParams);
+    }
+
+    public int checkUserStatus(int userIdx) {
+        String checkUserStatusQuery = "select exists(select userIdx from Users where userIdx = ? and status = 'enable')\n";
+        int checkUserStatusParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserStatusQuery, int.class, checkUserStatusParams);
     }
 }
 
