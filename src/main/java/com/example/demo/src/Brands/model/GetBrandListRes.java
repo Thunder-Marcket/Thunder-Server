@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetBrandListRes {
+    private int brandIdx;
     private String brandName;
     private String brandSubName;
     private String brandItemCount;
