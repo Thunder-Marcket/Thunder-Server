@@ -11,5 +11,6 @@ public class GetBrands {
     private String brandName;
     private String brandSubName;
     private String imageUrl;
+    private String brandItemCnt;
     private int isFollowing;
 }

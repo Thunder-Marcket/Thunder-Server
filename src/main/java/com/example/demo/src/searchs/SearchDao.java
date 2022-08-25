@@ -32,21 +32,28 @@ public class SearchDao {
 
     public List<GetBrands> getBrands(int userIdx) {
         String getBrandNamesQuery =
-                "select brandName, brandSubName, imageUrl,\n" +
-                "       case when bf.status = 'enable' then 1 else 0 end as isFollowing\n" +
+                "select brandName, brandSubName, imageUrl\n" +
+                "       , concat((select ifnull(brandItemCnt,0)),'개') as brandItemCnt\n" +
+                "       , case when bf.status = 'enable' then 1 else 0 end as isFollowing\n" +
                 "from Brands b\n" +
+                "    left join(\n" +
+                "        select count(itemIdx) as brandItemCnt, tagName\n" +
+                "        from Tags\n" +
+                "        group by tagName\n" +
+                "    ) t on t.tagName = b.brandName\n" +
                 "    left join(\n" +
                 "        select brand_followIdx, followingBrandIdx, followerUserIdx, status\n" +
                 "        from Brand_Follows\n" +
                 "        where followerUserIdx = ? and status = 'enable'\n" +
                 "    ) bf on bf.followingBrandIdx = b.brandIdx\n" +
-                "limit 5;";
+                "limit 5";
         int getBrandNamesParams = userIdx;
         return this.jdbcTemplate.query(getBrandNamesQuery,
                 (rs, rowNum) -> new GetBrands(
                         rs.getString("brandName"),
                         rs.getString("brandSubName"),
                         rs.getString("imageUrl"),
+                        rs.getString("brandItemCnt"),
                         rs.getInt("isFollowing")),
                 getBrandNamesParams);
     }

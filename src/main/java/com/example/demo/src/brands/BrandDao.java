@@ -25,7 +25,8 @@ public class BrandDao {
     }
 
     public List<GetBrandListRes> getBrands(int userIdx) {
-        String getBrandListQuery = "select\n" +
+        String getBrandListQuery =
+                "select\n" +
                 "    B.brandIdx,\n" +
                 "    B.brandName,\n" +
                 "    B.brandSubName,\n" +
@@ -79,7 +80,8 @@ public class BrandDao {
     }
 
     public List<GetFollowBrandRes> getFollowBrandList(int userIdx) {
-        String getFollowBrandQuery = "select\n" +
+        String getFollowBrandQuery =
+                "select\n" +
                 "    B.brandIdx,\n" +
                 "    B.brandName,\n" +
                 "    B.brandSubName,\n" +
@@ -115,7 +117,8 @@ public class BrandDao {
 
 
     public List<GetItemListRes> getFollowBrandItem(int userIdx, String brandName) {
-        String getFollowBrandItemQuery = "select I.itemIdx,\n" +
+        String getFollowBrandItemQuery =
+                "select I.itemIdx,\n" +
                 "       concat(I.cost, '원') AS cost,\n" +
                 "       I.itemName,\n" +
                 "       case\n" +
