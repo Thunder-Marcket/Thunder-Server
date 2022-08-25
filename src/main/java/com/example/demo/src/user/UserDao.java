@@ -127,14 +127,15 @@ public class UserDao {
 
     public List<User> getUserByPhoneNum(PostLoginReq postLoginReq) {
         String getUserQuery =
-                "select userIdx, phoneNumber\n" +
+                "select userIdx, phoneNumber, status\n" +
                 "from Users\n" +
                 "where phoneNumber = ?";
         Object[] getUserParams = new Object[]{postLoginReq.getPhoneNumber()};
         return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new User(
                         rs.getInt("userIdx"),
-                        rs.getString("phoneNumber")),
+                        rs.getString("phoneNumber"),
+                        rs.getString("status")),
                 getUserParams);
     }
 
@@ -189,6 +190,22 @@ public class UserDao {
         String checkUserStatusQuery = "select exists(select userIdx from Users where userIdx = ? and status = 'enable')\n";
         int checkUserStatusParams = userIdx;
         return this.jdbcTemplate.queryForObject(checkUserStatusQuery, int.class, checkUserStatusParams);
+    }
+
+    public List<String> getUserStatus(PostUserReq postUserReq) {
+        String getUserStatusQuery = "select status from Users where userName = ? and phoneNumber = ? and birth = ?";
+        Object[] getUserStatusParams = new Object[]{postUserReq.getUserName(), postUserReq.getPhoneNumber(), postUserReq.getBirth()};
+        return this.jdbcTemplate.query(getUserStatusQuery,
+                (rs, rowNum) -> new String(
+                        rs.getString("status")),
+                getUserStatusParams);
+    }
+
+    public int modifyUserStatusToEnable(User user) {
+        String modifyUserStatusToEnableQuery = "update Users set status = 'enable' where userIdx = ?";
+        Object[] modifyUserStatusToEnableParams = new Object[]{user.getUserIdx()};
+
+        return this.jdbcTemplate.update(modifyUserStatusToEnableQuery, modifyUserStatusToEnableParams);
     }
 }
 

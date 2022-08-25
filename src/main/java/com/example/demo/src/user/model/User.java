@@ -11,5 +11,6 @@ import lombok.Setter;
 public class User {
     private int userIdx;
     private String phoneNumber;
+    private String status;
 }
 

@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static com.example.demo.config.BaseResponseStatus.*;
 
 // Service Create, Update, Delete 의 로직 처리
@@ -38,21 +36,28 @@ public class UserService {
         //중복
         userProvider.checkPhoneNum(postUserReq.getPhoneNumber());
         userProvider.checkUserName(postUserReq.getUserName());
-        try{
+
+        try {
             int userIdx = userDao.createUser(postUserReq);
             //jwt 발급.
             String jwt = jwtService.createJwt(userIdx);
-            return new PostUserRes(jwt,userIdx);
+            return new PostUserRes(jwt, userIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+
     }
 
     public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
         User user = userProvider.getUserByPhoneNum(postLoginReq).get(0);
-
+//        if (user.getStatus().equals("disable")) {
+//            if (userDao.modifyUserStatusToEnable(user) == 0) {
+//                throw new BaseException(MODIFY_FAIL_USER_STATUS_TO_ENABLE);
+//            }
+//        }
+        int userIdx = user.getUserIdx();
+        userProvider.isDeleteStatus(userIdx);
         try {
-            int userIdx = user.getUserIdx();
             String jwt = jwtService.createJwt(userIdx);
             return new PostLoginRes(userIdx, jwt);
         } catch (Exception exception) {
@@ -61,6 +66,7 @@ public class UserService {
     }
 
     public PatchUserRes modifyUser(int userIdx, PatchUserReq patchUserReq) throws BaseException {
+        userProvider.isDeleteStatus(userIdx);
         userProvider.checkUserName(patchUserReq.getUserName());
         int result = userDao.modifyUser(userIdx, patchUserReq);
         if(result == 0){
@@ -78,7 +84,7 @@ public class UserService {
         userProvider.isDeleteStatus(userIdx);
         int result = userDao.modifyUserStatus(userIdx);
         if (result == 0) {
-            throw new BaseException(MODIFY_FALI_USER_STATUS);
+            throw new BaseException(MODIFY_FAIL_USER_STATUS);
         }
         try {
             PatchUserRes patchUserRes = userProvider.getModifiedUser(userIdx);

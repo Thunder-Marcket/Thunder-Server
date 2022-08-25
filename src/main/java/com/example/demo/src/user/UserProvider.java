@@ -88,5 +88,13 @@ public class UserProvider {
             throw new BaseException(DELETED_USER);
         }
     }
+
+    public String getUserStatus(PostUserReq postUserReq) {
+        List<String> status = userDao.getUserStatus(postUserReq);
+        if (status.isEmpty()) {
+            return "empty";
+        }
+        return status.get(0);
+    }
 }
 
