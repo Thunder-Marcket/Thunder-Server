@@ -61,28 +61,24 @@ public class UserProvider {
         }
     }
 
-    public int checkPhoneNum(String phoneNumber) throws BaseException{
-        try{
-            return userDao.checkPhoneNum(phoneNumber);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+    public void checkPhoneNum(String phoneNumber) throws BaseException{
+        if (userDao.checkPhoneNum(phoneNumber) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_PHONENUM);
         }
     }
 
-    public int checkUserName(String userName) throws BaseException {
-        try{
-            return userDao.checkUserName(userName);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+    public void checkUserName(String userName) throws BaseException {
+        if ( userDao.checkUserName(userName) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_NAME);
         }
     }
 
-    public User getUserByPhoneNum(String phoneNumber) throws BaseException {
-        try {
-            return userDao.getUserByPhoneNum(phoneNumber);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
+    public List<User> getUserByPhoneNum(PostLoginReq postLoginReq) throws BaseException {
+        List<User> users = userDao.getUserByPhoneNum(postLoginReq);
+        if(users.isEmpty()){
+            throw new BaseException(NOT_EXIST_USER);
         }
+        return users;
     }
 
     // 탈퇴한 회원인지 확인

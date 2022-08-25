@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 // Service Create, Update, Delete 의 로직 처리
@@ -34,12 +36,8 @@ public class UserService {
     //POST
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         //중복
-        if (userProvider.checkPhoneNum(postUserReq.getPhoneNumber()) == 1) {
-            throw new BaseException(POST_USERS_EXISTS_PHONENUM);
-        }
-        if (userProvider.checkUserName(postUserReq.getUserName()) == 1) {
-            throw new BaseException(POST_USERS_EXISTS_NAME);
-        }
+        userProvider.checkPhoneNum(postUserReq.getPhoneNumber());
+        userProvider.checkUserName(postUserReq.getUserName());
         try{
             int userIdx = userDao.createUser(postUserReq);
             //jwt 발급.
@@ -51,11 +49,8 @@ public class UserService {
     }
 
     public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
-        String phoneNum = postLoginReq.getPhoneNumber();
-        if(userDao.checkPhoneNum(phoneNum) == 0){
-            throw new BaseException(NOT_EXIST_USER);
-        }
-        User user = userProvider.getUserByPhoneNum(phoneNum);
+        User user = userProvider.getUserByPhoneNum(postLoginReq).get(0);
+
         try {
             int userIdx = user.getUserIdx();
             String jwt = jwtService.createJwt(userIdx);
@@ -66,9 +61,7 @@ public class UserService {
     }
 
     public PatchUserRes modifyUser(int userIdx, PatchUserReq patchUserReq) throws BaseException {
-        if (userProvider.checkUserName(patchUserReq.getUserName()) == 1) {
-            throw new BaseException(POST_USERS_EXISTS_NAME);
-        }
+        userProvider.checkUserName(patchUserReq.getUserName());
         int result = userDao.modifyUser(userIdx, patchUserReq);
         if(result == 0){
             throw new BaseException(MODIFY_FAIL_USER);

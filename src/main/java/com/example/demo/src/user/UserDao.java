@@ -125,13 +125,13 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-    public User getUserByPhoneNum(String phoneNumber) {
+    public List<User> getUserByPhoneNum(PostLoginReq postLoginReq) {
         String getUserQuery =
                 "select userIdx, phoneNumber\n" +
                 "from Users\n" +
                 "where phoneNumber = ?";
-        String getUserParams = phoneNumber;
-        return this.jdbcTemplate.queryForObject(getUserQuery,
+        Object[] getUserParams = new Object[]{postLoginReq.getPhoneNumber()};
+        return this.jdbcTemplate.query(getUserQuery,
                 (rs, rowNum) -> new User(
                         rs.getInt("userIdx"),
                         rs.getString("phoneNumber")),
