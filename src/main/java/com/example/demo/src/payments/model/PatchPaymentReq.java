@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostPaymentReq {
+public class PatchPaymentReq {
     private String accountName;
 }

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostPaymentReq {
-    private String accountName;
+public class PatchPaymentMonthlyPlanReq {
+    private int monthlyPlan;
 }

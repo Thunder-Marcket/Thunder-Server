@@ -3,8 +3,7 @@ package com.example.demo.src.payments;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.payments.model.PostPaymentReq;
-import com.example.demo.src.payments.model.PostPaymentRes;
+import com.example.demo.src.payments.model.*;
 import com.example.demo.utils.JwtService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +21,8 @@ public class PaymentController {
 
     @Autowired
     private final PaymentService paymentService;
+    @Autowired
+    private final PaymentProvider paymentProvider;
     @Autowired
     private final JwtService jwtService;
 
@@ -47,5 +48,68 @@ public class PaymentController {
         }
     }
 
+    /**
+     * 결제수단 조회 API
+     * [GET] /payments/:userIdx
+     *
+     * @return BaseResponse<GetPaymentRes>
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}")
+    public BaseResponse<GetPaymentRes> getPayment(@PathVariable("userIdx") int userIdx) {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx);
+            return new BaseResponse<>(getPaymentRes);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
+    /**
+     * 할부 설정 API
+     * [PATCH] /payments/:userIdx/monthly-plan
+     *
+     * @return BaseResponse<GetPaymentRes>
+     */
+    @ResponseBody
+    @PatchMapping("/{userIdx}/monthly-plan")
+    public BaseResponse<GetPaymentRes> modifyPaymentMonthlyPlan(@PathVariable("userIdx") int userIdx,
+                                                                @RequestBody PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetPaymentRes getPaymentRes = paymentService.modifyPaymentMonthlyPlan(userIdx, patchPaymentMonthlyPlanReq);
+            return new BaseResponse<>(getPaymentRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 결제수단 수정 API
+     * [PATCH] /payments/:userIdx
+     *
+     * @return BaseResponse<GetPaymentRes>
+     */
+    @ResponseBody
+    @PatchMapping("/{userIdx}")
+    public BaseResponse<GetPaymentRes> modifyPayment(@PathVariable("userIdx") int userIdx,
+                                                     @RequestBody PatchPaymentReq patchPaymentReq) {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetPaymentRes getPaymentRes = paymentService.modifyPayment(userIdx, patchPaymentReq);
+            return new BaseResponse<>(getPaymentRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
