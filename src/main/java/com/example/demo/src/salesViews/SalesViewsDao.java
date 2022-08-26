@@ -1,16 +1,23 @@
 package com.example.demo.src.salesViews;
 
 import com.example.demo.src.salesViews.model.GetSalesViewsRes;
+import com.example.demo.src.salesViews.model.PatchSalesViewsRes;
+import com.example.demo.src.salesViews.model.SalesViews;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
 @Repository
 public class SalesViewsDao {
     private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     // 최근 본 상품 조회
     public List<GetSalesViewsRes> getSalesViews(int userIdx) {
@@ -49,5 +56,13 @@ public class SalesViewsDao {
                         rs.getString("uploadTime"),
                         rs.getString("imageUrl")),
                 getSalesViewsParams);
+    }
+
+    public int modifySalesViewsStatus(SalesViews salesViews) {
+        String modifyStatusQuery = "update SaleViews set status = 'disable' where viewItemIdx = ?";
+        int modifyStatusParams = salesViews.getViewItemIdx();
+
+        return this.jdbcTemplate.update(modifyStatusQuery, modifyStatusParams);
+
     }
 }

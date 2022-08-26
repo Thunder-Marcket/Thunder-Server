@@ -78,6 +78,8 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_PAYMENT_MONTHLYPLAN(false, 4018, "할부개월 수정 실패"),
     MODIFY_FAIL_PAYMENT(false, 4019, "결제수단 수정 실패"),
 
+    MODIFY_FAIL_SALESVIEWS_STATUS(false, 4020, "최근 본 상품 상태 삭제로 수정 실패"),
+
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
 

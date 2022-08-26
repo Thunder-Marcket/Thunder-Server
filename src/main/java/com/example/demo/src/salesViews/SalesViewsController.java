@@ -4,6 +4,7 @@ package com.example.demo.src.salesViews;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.salesViews.model.GetSalesViewsRes;
+import com.example.demo.src.salesViews.model.PatchSalesViewsRes;
 import com.example.demo.utils.JwtService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ public class SalesViewsController {
     @Autowired
     private final SalesViewsProvider salesViewsProvider;
     @Autowired
+    private final SalesViewsService salesViewsService;
+    @Autowired
     private final JwtService jwtService;
 
     /**
@@ -43,7 +46,31 @@ public class SalesViewsController {
             List<GetSalesViewsRes> getSalesViewsResList = salesViewsProvider.getSalesViews(userIdx);
             return new BaseResponse<>(getSalesViewsResList);
         } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 최근 본 상품 삭제
+     * [PATCH] /sales-views/d/:userIdx
+     *
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/d/{userIdx}")
+    public BaseResponse<String> modifySalesViewsStatus(@PathVariable("userIdx") int userIdx,
+                                                       @RequestBody PatchSalesViewsRes patchSalesViewsRes) throws BaseException {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            salesViewsService.modifySalesViewsStatus(patchSalesViewsRes);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 }
