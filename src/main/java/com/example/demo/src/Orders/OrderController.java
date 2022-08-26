@@ -78,13 +78,26 @@ public class OrderController {
      * [POST] /orders
      * @return BaseResponse<PostOrderRes>
      */
-//    @ResponseBody
-//    @PostMapping("")
-//    public BaseResponse<PostOrderRes> createOrder(@RequestBody PostOrderReq postOrderReq){
-//        if(postOrderReq.getIsDirectDeal() == 0 && postOrderReq.getAddressIdx() != 0){
-//            return new BaseResponse<>(POST_ORDERS_UNABLE_ADDRESS);
-//        }
-//
-//    }
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostOrderRes> createOrder(@RequestBody PostOrderReq postOrderReq){
+        if(postOrderReq.getIsDirectDeal() == 0 && postOrderReq.getAddressIdx() != 0){
+            return new BaseResponse<>(POST_ORDERS_UNABLE_ADDRESS);
+        }
+        if(postOrderReq.getIsDirectDeal() == 1 && postOrderReq.getAddressIdx() == 0){
+            return new BaseResponse<>(POST_ORDERS_INVALID_ADDRESS);
+        }
+
+        try{
+            if(postOrderReq.getBuyUserIdx() != jwtService.getUserIdx()){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            PostOrderRes postOrderRes = orderService.createOrder(postOrderReq);
+            return new BaseResponse<>(postOrderRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }

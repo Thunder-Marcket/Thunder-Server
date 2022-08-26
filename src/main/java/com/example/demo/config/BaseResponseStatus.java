@@ -48,6 +48,11 @@ public enum BaseResponseStatus {
     POST_ADDRESSES_EXISTS_ADDRESS(false, 2606, "중복된 주소입니다."),
     POST_ADDRESSES_INVALID_ADDRESS(false, 2607, "잘못된 형식의 입력입니다."),
 
+    // [POST] / orders
+    POST_ORDERS_UNABLE_ADDRESS(false, 2621, "직거래에는 주소가 필요 없습니다."),
+    POST_ORDERS_INVALID_ADDRESS(false, 2622, "사용할 수 없는 주소 입니다."),
+    POST_ORDERS_INVALID_ITEM(false, 2623, "해당 상품이 존재하지 않습니다."),
+
 
     /**
      * 3000 : Response 오류
