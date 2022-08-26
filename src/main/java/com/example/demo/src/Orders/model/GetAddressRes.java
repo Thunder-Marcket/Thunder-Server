@@ -12,4 +12,5 @@ public class GetAddressRes {
     private String userName;
     private String address;
     private String detailAddress;
+    private String phoneNumber;
 }

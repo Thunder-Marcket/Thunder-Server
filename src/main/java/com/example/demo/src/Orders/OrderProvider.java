@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Orders.model.GetDirectOrderRes;
 import com.example.demo.src.Orders.model.GetIndirectOrderRes;
+import com.example.demo.src.Orders.model.PostOrderReq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,14 @@ public class OrderProvider {
             GetIndirectOrderRes getIndirectOrderRes = orderDao.getIndirectOrderRes(userIdx, itemIdx, usePoint);
 
             return getIndirectOrderRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkItem(PostOrderReq postOrderReq) throws BaseException {
+        try{
+            return orderDao.checkItem(postOrderReq);
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -1,8 +1,6 @@
 package com.example.demo.src.Orders;
 
-import com.example.demo.src.Orders.model.GetAddressRes;
-import com.example.demo.src.Orders.model.GetDirectOrderRes;
-import com.example.demo.src.Orders.model.GetIndirectOrderRes;
+import com.example.demo.src.Orders.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,21 +73,20 @@ public class OrderDao {
         GetAddressRes addressRes = null;
         try{
             getAddressRes = getNewAddressRes(userIdx);
-
+            addressRes = getBaseAddressRes(userIdx);
             try{
                 addressRes = getBaseAddressRes(userIdx);
                 getAddressRes = addressRes;
             } catch (Exception exception){
-                addressRes = null;
+                addressRes = new GetAddressRes(0, "배송지 없음", "없음", "없음", "없음");
             }
         }catch (Exception exception){
-            getAddressRes = new GetAddressRes(0, "배송지 없음", "없음", "없음");
+            getAddressRes = new GetAddressRes(0, "배송지 없음", "없음", "없음", "없음");
 
         } finally {
-            if(addressRes != null){
+            if(addressRes.getAddressIdx() != 0){
                 getAddressRes = addressRes;
             }
-
             String getIndirectOrderQuery = "select\n" +
                     "    I.itemName,\n" +
                     "    (select Images.imageUrl from Images\n" +
@@ -144,7 +141,31 @@ public class OrderDao {
                 "    A.addressIdx,\n" +
                 "    A.name AS userName,\n" +
                 "    A.address,\n" +
-                "    A.detailAddress\n" +
+                "    A.detailAddress,\n" +
+                "    A.phoneNumber\n" +
+                "\n" +
+                "from Addresss A\n" +
+                "inner join Users U on A.userIdx = U.userIdx\n" +
+                "where U.userIdx = ?\n" +
+                "order by A.updatedAt desc limit 1;";
+        int getAddressResParams = userIdx;
+        return jdbcTemplate.queryForObject(getAddressResQuery,
+                (rs, rowNum) -> new GetAddressRes(
+                        rs.getInt("addressIdx"),
+                        rs.getString("userName"),
+                        rs.getString("address"),
+                        rs.getString("detailAddress"),
+                        rs.getString("phoneNumber")
+                ), getAddressResParams);
+    }
+
+    public GetAddressRes getBaseAddressRes(int userIdx){
+        String getAddressResQuery = "select\n" +
+                "    A.addressIdx,\n" +
+                "    A.name AS userName,\n" +
+                "    A.address,\n" +
+                "    A.detailAddress,\n" +
+                "    A.phoneNumber\n" +
                 "\n" +
                 "from Addresss A\n" +
                 "inner join Users U on A.userIdx = U.userIdx\n" +
@@ -157,30 +178,68 @@ public class OrderDao {
                         rs.getInt("addressIdx"),
                         rs.getString("userName"),
                         rs.getString("address"),
-                        rs.getString("detailAddress")
+                        rs.getString("detailAddress"),
+                        rs.getString("phoneNumber")
                 ), getAddressResParams);
     }
 
-    public GetAddressRes getBaseAddressRes(int userIdx){
-        String getAddressResQuery = "select\n" +
-                "    A.addressIdx,\n" +
-                "    A.name,\n" +
-                "    A.address,\n" +
-                "    A.detailAddress\n" +
-                "\n" +
-                "from Addresss A\n" +
-                "inner join Users U on A.userIdx = U.userIdx\n" +
-                "where U.userIdx = ?\n" +
-                "AND A.isBaseAddress limit 1;";
-        int getAddressResParams = userIdx;
 
-        return jdbcTemplate.queryForObject(getAddressResQuery,
-                (rs, rowNum) -> new GetAddressRes(
-                        rs.getInt("addressIdx"),
-                        rs.getString("userName"),
-                        rs.getString("address"),
-                        rs.getString("detailAddress")
-                ), getAddressResParams);
+    public PostOrderRes createOrder(PostOrderReq postOrderReq) {
+        String createOrderQuery = "insert into Orders (addressIdx, itemIdx, buyUserIdx, orderRequest, isDirectDeal, paymentIdx) VALUES (?,?,?,?,?,?);";
+        Object[] createOrderParams;
+
+        if(postOrderReq.getAddressIdx() == 0){
+            createOrderParams = new Object[]{
+                    null,
+                    postOrderReq.getItemIdx(),
+                    postOrderReq.getBuyUserIdx(),
+                    postOrderReq.getOrderRequest(),
+                    postOrderReq.getIsDirectDeal(),
+                    postOrderReq.getPaymentIdx()
+            };
+        }
+        else{
+            createOrderParams = new Object[]{
+                    postOrderReq.getAddressIdx(),
+                    postOrderReq.getItemIdx(),
+                    postOrderReq.getBuyUserIdx(),
+                    postOrderReq.getOrderRequest(),
+                    postOrderReq.getIsDirectDeal(),
+                    postOrderReq.getPaymentIdx()
+            };
+        }
+
+        this.jdbcTemplate.update(createOrderQuery, createOrderParams);
+
+        soldItem(postOrderReq.getItemIdx());
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return new PostOrderRes(this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class));
+    }
+
+    public int checkItem(PostOrderReq postOrderReq) {
+        String checkItemQuery = "select exists(select I.itemIdx from Items I where I.itemIdx = ?);";
+        int checkItemParam = postOrderReq.getItemIdx();
+
+        return this.jdbcTemplate.queryForObject(checkItemQuery, int.class, checkItemParam);
+    }
+
+    public void soldItem(int itemIdx){
+        String soldItemQuery = "update Items\n" +
+                "set Items.status = case\n" +
+                "    when itemCount = 1 then 'sold'\n" +
+                "    ELSE Items.status\n" +
+                "    END,\n" +
+                "    Items.itemCount = case\n" +
+                "    when itemCount = 1 then 0\n" +
+                "    when itemCount = 0 then 0\n" +
+                "    ELSE itemCount - 1\n" +
+                "    END\n" +
+                "\n" +
+                "where Items.itemIdx = ?;";
+        int soldItemParam = itemIdx;
+
+        this.jdbcTemplate.update(soldItemQuery, soldItemParam);
     }
 
 

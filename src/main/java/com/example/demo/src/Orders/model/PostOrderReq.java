@@ -10,6 +10,7 @@ import lombok.Setter;
 public class PostOrderReq {
     private int addressIdx;
     private int itemIdx;
+    private int buyUserIdx;
     private String orderRequest;
     private int isDirectDeal;
     private int paymentIdx;
