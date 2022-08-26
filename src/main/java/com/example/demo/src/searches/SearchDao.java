@@ -17,7 +17,7 @@ public class SearchDao {
 
     public List<GetSearch> getSearches(int userIdx) {
         String getSearchesQuery =
-                "select u.userIdx, searchText\n" +
+                "select u.userIdx, searchIdx, searchText\n" +
                 "from Users u\n" +
                 "join Searchs s on u.userIdx = s.userIdx\n" +
                 "where u.userIdx = ? and s.status = 'enable'\n" +
@@ -27,6 +27,7 @@ public class SearchDao {
         return this.jdbcTemplate.query(getSearchesQuery,
                 (rs, rowNum) -> new GetSearch(
                         rs.getInt("userIdx"),
+                        rs.getInt("searchIdx"),
                         rs.getString("searchText")),
                 getSearchesParams);
     }

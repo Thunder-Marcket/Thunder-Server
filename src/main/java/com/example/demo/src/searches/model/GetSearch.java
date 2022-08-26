@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetSearch {
     private int userIdx;
+    private int searchIdx;
     private String searchText;
 }

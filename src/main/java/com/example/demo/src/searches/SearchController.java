@@ -76,7 +76,7 @@ public class SearchController {
 
     /**
      * 최근 검색어 삭제하기 (전체)
-     * [PATCH] /searches/d/:userIdx
+     * [PATCH] /searches/all-d/:userIdx
      *
      * @return BaseResponse<PatchSearchesRes>
      */
