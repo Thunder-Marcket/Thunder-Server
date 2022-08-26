@@ -4,6 +4,7 @@ package com.example.demo.src.salesViews;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.salesViews.model.GetSalesViewsRes;
+import com.example.demo.src.salesViews.model.PatchSalesViewsReq;
 import com.example.demo.src.salesViews.model.PatchSalesViewsRes;
 import com.example.demo.utils.JwtService;
 import lombok.AllArgsConstructor;
@@ -58,17 +59,16 @@ public class SalesViewsController {
      */
     @ResponseBody
     @PatchMapping("/d/{userIdx}")
-    public BaseResponse<String> modifySalesViewsStatus(@PathVariable("userIdx") int userIdx,
-                                                       @RequestBody PatchSalesViewsRes patchSalesViewsRes) throws BaseException {
+    public BaseResponse<PatchSalesViewsRes> modifySalesViewsStatus(@PathVariable("userIdx") int userIdx,
+                                                                   @RequestBody PatchSalesViewsReq patchSalesViewsReq) throws BaseException {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            salesViewsService.modifySalesViewsStatus(patchSalesViewsRes);
-            String result = "";
-            return new BaseResponse<>(result);
+            PatchSalesViewsRes patchSalesViewsRes = salesViewsService.modifySalesViewsStatus(patchSalesViewsReq);
+            return new BaseResponse<>(patchSalesViewsRes);
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

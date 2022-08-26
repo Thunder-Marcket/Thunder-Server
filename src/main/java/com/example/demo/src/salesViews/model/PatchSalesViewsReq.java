@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchSalesViewsRes {
-    private List<SalesViews> viewItemIdx;
+public class PatchSalesViewsReq {
+    private List<SalesViews> viewItemIdxList;
 }
