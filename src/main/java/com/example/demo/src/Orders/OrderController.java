@@ -3,15 +3,14 @@ package com.example.demo.src.Orders;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.Orders.model.GetDirectOrderRes;
-import com.example.demo.src.Orders.model.GetIndirectOrderRes;
-import com.example.demo.src.Orders.model.PostOrderReq;
-import com.example.demo.src.Orders.model.PostOrderRes;
+import com.example.demo.src.Orders.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -95,6 +94,44 @@ public class OrderController {
 
             PostOrderRes postOrderRes = orderService.createOrder(postOrderReq);
             return new BaseResponse<>(postOrderRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     *  구매 거래 내역 조회 API
+     *  [GET] /orders/purchase
+     * @return BaseResponse<List<GetPurchaseOrderRes>>
+     */
+    @ResponseBody
+    @GetMapping("/purchase")
+    public BaseResponse<List<GetPurchaseOrderRes>> getPurchase(){
+        try{
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetPurchaseOrderRes> getPurchaseOrderRes = orderProvider.getPurchase(userIdx);
+            return new BaseResponse<>(getPurchaseOrderRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     *  판매 내역 조회 API
+     *  [GET] /orders/sale
+     * @return BaseResponse<List<GetSaleOrderRes>>
+     */
+    @ResponseBody
+    @GetMapping("/sale")
+    public BaseResponse<List<GetSaleOrderRes>> getSale(){
+        try{
+            int userIdx = jwtService.getUserIdx();
+
+            List<GetSaleOrderRes> getSaleOrderRes = orderProvider.getSale(userIdx);
+            return new BaseResponse<>(getSaleOrderRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }

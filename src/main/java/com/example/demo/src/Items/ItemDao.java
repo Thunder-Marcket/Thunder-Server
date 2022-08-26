@@ -55,7 +55,11 @@ public class ItemDao {
                 "\n" +
                 "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
-                "       I.isAdItem\n" +
+                "       I.isAdItem,\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
                 "\n" +
                 "from Items I\n" +
                 "\n" +
@@ -75,7 +79,8 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("status")),
                 getItemParams);
     }
 
@@ -116,7 +121,11 @@ public class ItemDao {
                 "\n" +
                 "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
-                "       I.isAdItem\n" +
+                "       I.isAdItem,\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
                 "\n" +
                 "from Items I\n" +
                 "\n" +
@@ -141,7 +150,8 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("status")),
                 getSearchItemParam);
 
     }
@@ -190,7 +200,11 @@ public class ItemDao {
                 "            END from Users where Users.userIdx = I.userIdx) AS storeImageUrl,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isSafePayment,\n" +
-                "       (select count(Comments.buyUserIdx) from Comments where Comments.sellUserIdx = I.userIdx) AS commentCount\n" +
+                "       (select count(Comments.buyUserIdx) from Comments where Comments.sellUserIdx = I.userIdx) AS commentCount,\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
                 "\n" +
                 "from Items I\n" +
                 "where I.itemIdx = ?\n" +
@@ -226,7 +240,8 @@ public class ItemDao {
                         rs.getString("storeImageUrl"),
                         rs.getInt("isCanCheck"),
                         rs.getInt("isSafePayment"),
-                        rs.getInt("commentCount")),
+                        rs.getInt("commentCount"),
+                        rs.getString("status")),
                 getItemInfoParams);
     }
 
@@ -274,11 +289,19 @@ public class ItemDao {
                 "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
                 "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
                 "        END AS period,\n" +
-                "       (select Images.imageUrl from Images\n" +
+                "       case\n" +
+                "           when (select Images.imageUrl from Images\n" +
                 "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
                 "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
                 "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
-                "                                                                      where I2.itemIdx = I.itemIdx)) AS imageUrl,\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx)) is null\n" +
+                "                then '이미지 없음'\n" +
+                "            ELSE (select Images.imageUrl from Images\n" +
+                "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
+                "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
+                "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx))\n" +
+                "       END AS imageUrl,\n" +
                 "       I.isSafePayment,\n" +
                 "       case\n" +
                 "           when (select 1 from Likes inner join Users U on Likes.userIdx = U.userIdx\n" +
@@ -289,7 +312,11 @@ public class ItemDao {
                 "\n" +
                 "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
-                "       I.isAdItem\n" +
+                "       I.isAdItem,\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
                 "\n" +
                 "from Items I\n" +
                 "inner join Users U2 on I.userIdx = U2.userIdx\n" +
@@ -314,7 +341,8 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("status")),
                 getStoreItemListParams);
     }
 
@@ -359,7 +387,11 @@ public class ItemDao {
                 "\n" +
                 "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
-                "       I.isAdItem\n" +
+                "       I.isAdItem,\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
                 "\n" +
                 "from Items I\n" +
                 "\n" +
@@ -386,7 +418,8 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("status")),
                 getSimilarItemListParams);
     }
 

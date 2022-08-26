@@ -39,6 +39,6 @@ public class GetItemInfoRes {
     private int isCanCheck;
     private int isSafePayment;
     private int commentCount;
-
+    private String status;
 
 }
