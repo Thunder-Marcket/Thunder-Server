@@ -73,7 +73,6 @@ public class OrderDao {
         GetAddressRes addressRes = null;
         try{
             getAddressRes = getNewAddressRes(userIdx);
-            logger.warn("~~~~~~~~~~");
             addressRes = getBaseAddressRes(userIdx);
             try{
                 addressRes = getBaseAddressRes(userIdx);
@@ -88,7 +87,6 @@ public class OrderDao {
             if(addressRes.getAddressIdx() != 0){
                 getAddressRes = addressRes;
             }
-            logger.warn(getAddressRes.getAddress());
             String getIndirectOrderQuery = "select\n" +
                     "    I.itemName,\n" +
                     "    (select Images.imageUrl from Images\n" +
@@ -187,7 +185,7 @@ public class OrderDao {
 
 
     public PostOrderRes createOrder(PostOrderReq postOrderReq) {
-        String createOrderQuery = "";
+        String createOrderQuery = "insert into Orders (addressIdx, itemIdx, buyUserIdx, orderRequest, isDirectDeal, paymentIdx) VALUES (?,?,?,?,?,?);";
         Object[] createOrderParams;
 
         if(postOrderReq.getAddressIdx() == 0){
@@ -213,6 +211,8 @@ public class OrderDao {
 
         this.jdbcTemplate.update(createOrderQuery, createOrderParams);
 
+        soldItem(postOrderReq.getItemIdx());
+
         String lastInsertIdQuery = "select last_insert_id()";
         return new PostOrderRes(this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class));
     }
@@ -223,4 +223,23 @@ public class OrderDao {
 
         return this.jdbcTemplate.queryForObject(checkItemQuery, int.class, checkItemParam);
     }
+
+    public void soldItem(int itemIdx){
+        String soldItemQuery = "update Items\n" +
+                "set Items.status = case\n" +
+                "    when itemCount = 1 then 'sold'\n" +
+                "    END,\n" +
+                "    Items.itemCount = case\n" +
+                "    when itemCount = 1 then 0\n" +
+                "    when itemCount = 0 then 0\n" +
+                "    ELSE itemCount - 1\n" +
+                "    END\n" +
+                "\n" +
+                "where Items.itemIdx = ?;";
+        int soldItemParam = itemIdx;
+
+        this.jdbcTemplate.update(soldItemQuery, soldItemParam);
+    }
+
+
 }

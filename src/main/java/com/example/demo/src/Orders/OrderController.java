@@ -81,10 +81,10 @@ public class OrderController {
     @ResponseBody
     @PostMapping("")
     public BaseResponse<PostOrderRes> createOrder(@RequestBody PostOrderReq postOrderReq){
-        if(postOrderReq.getIsDirectDeal() == 0 && postOrderReq.getAddressIdx() != 0){
+        if(postOrderReq.getIsDirectDeal() == 1 && postOrderReq.getAddressIdx() != 0){
             return new BaseResponse<>(POST_ORDERS_UNABLE_ADDRESS);
         }
-        if(postOrderReq.getIsDirectDeal() == 1 && postOrderReq.getAddressIdx() == 0){
+        if(postOrderReq.getIsDirectDeal() == 0 && postOrderReq.getAddressIdx() == 0){
             return new BaseResponse<>(POST_ORDERS_INVALID_ADDRESS);
         }
 
