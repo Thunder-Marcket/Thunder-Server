@@ -2,13 +2,13 @@ package com.example.demo.src.Orders;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.Orders.model.GetDirectOrderRes;
-import com.example.demo.src.Orders.model.GetIndirectOrderRes;
-import com.example.demo.src.Orders.model.PostOrderReq;
+import com.example.demo.src.Orders.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -46,6 +46,24 @@ public class OrderProvider {
     public int checkItem(PostOrderReq postOrderReq) throws BaseException {
         try{
             return orderDao.checkItem(postOrderReq);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetPurchaseOrderRes> getPurchase(int userIdx) throws BaseException {
+        try{
+            List<GetPurchaseOrderRes> getPurchaseOrderRes = orderDao.getPurchase(userIdx);
+            return getPurchaseOrderRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetSaleOrderRes> getSale(int userIdx) throws BaseException {
+        try{
+            List<GetSaleOrderRes> getSaleOrderRes = orderDao.getSale(userIdx);
+            return getSaleOrderRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

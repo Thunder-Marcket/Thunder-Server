@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class OrderDao {
@@ -243,4 +244,68 @@ public class OrderDao {
     }
 
 
+    public List<GetPurchaseOrderRes> getPurchase(int userIdx) {
+        String getPurchaseQuery = "select\n" +
+                "    O.orderIdx,\n" +
+                "    I.itemName,\n" +
+                "    concat(I.cost, '원') AS itemCost,\n" +
+                "    (select I2.imageUrl from ItemImages\n" +
+                "                        inner join Images I2 on ItemImages.itemImageIdx = I2.itemImageIdx\n" +
+                "                        where ItemImages.itemIdx = I.itemIdx\n" +
+                "                        order by I2.createdAt desc limit 1) AS itemUrl,\n" +
+                "    U.userName AS storeName,\n" +
+                "    case\n" +
+                "        when hour(O.updatedAt) >= 12 then DATE_FORMAT(O.updatedAt, '%y.%m.%d (오후 %l:%i)')\n" +
+                "        ELSE DATE_FORMAT(O.updatedAt, '%y.%m.%d (오전 %l:%i)')\n" +
+                "    END AS orderTime\n" +
+                "\n" +
+                "\n" +
+                "from Orders O\n" +
+                "inner join Items I on O.itemIdx = I.itemIdx\n" +
+                "inner join Users U on I.userIdx = U.userIdx\n" +
+                "where O.buyUserIdx = ?;";
+        int getPurchaseParam = userIdx;
+
+        return this.jdbcTemplate.query(getPurchaseQuery,
+                (rs, rowNum) -> new GetPurchaseOrderRes(
+                        rs.getInt("orderIdx"),
+                        rs.getString("itemName"),
+                        rs.getString("itemCost"),
+                        rs.getString("itemUrl"),
+                        rs.getString("storeName"),
+                        rs.getString("orderTime")
+                ),
+                getPurchaseParam);
+    }
+
+    public List<GetSaleOrderRes> getSale(int userIdx) {
+        String getSaleQuery = "select\n" +
+                "    O.orderIdx,\n" +
+                "    I.itemName,\n" +
+                "    concat(I.cost, '원') AS itemCost,\n" +
+                "    (select I2.imageUrl from ItemImages\n" +
+                "                        inner join Images I2 on ItemImages.itemImageIdx = I2.itemImageIdx\n" +
+                "                        where ItemImages.itemIdx = I.itemIdx\n" +
+                "                        order by I2.createdAt desc limit 1) AS itemUrl,\n" +
+                "    (select U.userName from Users U where O.buyUserIdx = U.userIdx) AS buyUserName,\n" +
+                "    case\n" +
+                "        when hour(O.updatedAt) >= 12 then DATE_FORMAT(O.updatedAt, '%y.%m.%d (오후 %l:%i)')\n" +
+                "        ELSE DATE_FORMAT(O.updatedAt, '%y.%m.%d (오전 %l:%i)')\n" +
+                "    END AS orderTime\n" +
+                "from Orders O\n" +
+                "inner join Items I on O.itemIdx = I.itemIdx\n" +
+                "where I.userIdx = ?;";
+        int getSaleParam = userIdx;
+
+        return this.jdbcTemplate.query(getSaleQuery,
+                (rs, rowNum) -> new GetSaleOrderRes(
+                        rs.getInt("orderIdx"),
+                        rs.getString("itemName"),
+                        rs.getString("itemCost"),
+                        rs.getString("itemUrl"),
+                        rs.getString("buyUserName"),
+                        rs.getString("orderTime")
+                ),
+                getSaleParam);
+    }
 }
