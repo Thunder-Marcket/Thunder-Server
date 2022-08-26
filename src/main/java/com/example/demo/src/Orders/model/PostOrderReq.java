@@ -7,9 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetAddressRes {
+public class PostOrderReq {
     private int addressIdx;
-    private String userName;
-    private String address;
-    private String detailAddress;
+    private int itemIdx;
+    private String orderRequest;
+    private int isDirectDeal;
+    private int paymentIdx;
 }

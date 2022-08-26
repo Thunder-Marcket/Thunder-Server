@@ -2,13 +2,18 @@ package com.example.demo.src.Orders;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Orders.model.GetDirectOrderRes;
 import com.example.demo.src.Orders.model.GetIndirectOrderRes;
+import com.example.demo.src.Orders.model.PostOrderReq;
+import com.example.demo.src.Orders.model.PostOrderRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -68,5 +73,18 @@ public class OrderController {
     }
 
 
+    /**
+     * 거래 등록 API
+     * [POST] /orders
+     * @return BaseResponse<PostOrderRes>
+     */
+//    @ResponseBody
+//    @PostMapping("")
+//    public BaseResponse<PostOrderRes> createOrder(@RequestBody PostOrderReq postOrderReq){
+//        if(postOrderReq.getIsDirectDeal() == 0 && postOrderReq.getAddressIdx() != 0){
+//            return new BaseResponse<>(POST_ORDERS_UNABLE_ADDRESS);
+//        }
+//
+//    }
 
 }

@@ -71,47 +71,25 @@ public class OrderDao {
     }
 
     public GetIndirectOrderRes getIndirectOrderRes(int userIdx, int itemIdx, int usePoint) {
-        GetAddressRes getAddressRes;
-        String getAddressResQuery = "select\n" +
-                "    A.name AS userName,\n" +
-                "    A.address,\n" +
-                "    A.detailAddress\n" +
-                "\n" +
-                "from Addresss A\n" +
-                "inner join Users U on A.userIdx = U.userIdx\n" +
-                "where U.userIdx = ?\n" +
-                "order by A.updatedAt desc limit 1;";
-        int getAddressResParams = userIdx;
-
-        getAddressRes = jdbcTemplate.queryForObject(getAddressResQuery,
-                (rs, rowNum) -> new GetAddressRes(
-                        rs.getString("userName"),
-                        rs.getString("address"),
-                        rs.getString("detailAddress")
-                ), getAddressResParams);
-
+        GetAddressRes getAddressRes = null;
+        GetAddressRes addressRes = null;
         try{
-            getAddressResQuery = "select\n" +
-                    "    A.name AS userName,\n" +
-                    "    A.address,\n" +
-                    "    A.detailAddress\n" +
-                    "\n" +
-                    "from Addresss A\n" +
-                    "inner join Users U on A.userIdx = U.userIdx\n" +
-                    "where U.userIdx = ?\n" +
-                    "AND A.isBaseAddress limit 1;";
-            getAddressResParams = userIdx;
+            getAddressRes = getNewAddressRes(userIdx);
 
-            GetAddressRes addressRes = jdbcTemplate.queryForObject(getAddressResQuery,
-                    (rs, rowNum) -> new GetAddressRes(
-                            rs.getString("userName"),
-                            rs.getString("address"),
-                            rs.getString("detailAddress")
-                    ), getAddressResParams);
+            try{
+                addressRes = getBaseAddressRes(userIdx);
+                getAddressRes = addressRes;
+            } catch (Exception exception){
+                addressRes = null;
+            }
+        }catch (Exception exception){
+            getAddressRes = new GetAddressRes(0, "배송지 없음", "없음", "없음");
 
-            getAddressRes = addressRes;
-        }
-        finally {
+        } finally {
+            if(addressRes != null){
+                getAddressRes = addressRes;
+            }
+
             String getIndirectOrderQuery = "select\n" +
                     "    I.itemName,\n" +
                     "    (select Images.imageUrl from Images\n" +
@@ -160,4 +138,50 @@ public class OrderDao {
                     ), getIndirectOrderParams);
         }
     }
+
+    public GetAddressRes getNewAddressRes(int userIdx){
+        String getAddressResQuery = "select\n" +
+                "    A.addressIdx,\n" +
+                "    A.name AS userName,\n" +
+                "    A.address,\n" +
+                "    A.detailAddress\n" +
+                "\n" +
+                "from Addresss A\n" +
+                "inner join Users U on A.userIdx = U.userIdx\n" +
+                "where U.userIdx = ?\n" +
+                "order by A.updatedAt desc limit 1;";
+        int getAddressResParams = userIdx;
+
+        return jdbcTemplate.queryForObject(getAddressResQuery,
+                (rs, rowNum) -> new GetAddressRes(
+                        rs.getInt("addressIdx"),
+                        rs.getString("userName"),
+                        rs.getString("address"),
+                        rs.getString("detailAddress")
+                ), getAddressResParams);
+    }
+
+    public GetAddressRes getBaseAddressRes(int userIdx){
+        String getAddressResQuery = "select\n" +
+                "    A.addressIdx,\n" +
+                "    A.name,\n" +
+                "    A.address,\n" +
+                "    A.detailAddress\n" +
+                "\n" +
+                "from Addresss A\n" +
+                "inner join Users U on A.userIdx = U.userIdx\n" +
+                "where U.userIdx = ?\n" +
+                "AND A.isBaseAddress limit 1;";
+        int getAddressResParams = userIdx;
+
+        return jdbcTemplate.queryForObject(getAddressResQuery,
+                (rs, rowNum) -> new GetAddressRes(
+                        rs.getInt("addressIdx"),
+                        rs.getString("userName"),
+                        rs.getString("address"),
+                        rs.getString("detailAddress")
+                ), getAddressResParams);
+    }
+
+
 }

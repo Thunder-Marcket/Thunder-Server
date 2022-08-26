@@ -7,9 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetAddressRes {
-    private int addressIdx;
-    private String userName;
-    private String address;
-    private String detailAddress;
+public class PostOrderRes {
+    private int orderIdx;
 }
