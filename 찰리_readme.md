@@ -28,6 +28,10 @@ https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FA
     - queryForObject는 결과 값이 null이거나 2개 이상이면 IncorrectResultSizeDataAccessException 예외를 발생시킨다.
     - 쿼리 문의 결과 칼럼 이름과 jdbcTemplate의 rs.getString 등의 columnLabel 이름이 같아야 한다...
 
+## 22.08.26
+  - API 명세서 중 12-3, 12-4, 12-5 개발
+  - 이미지 처리 방식을 모르겠다... 어떻게 할지 감이 안잡힌다...
+
 ## 1차 피드백 
   - 환경 이슈 빠르게 해결할 것
   - API 인당 20개 정도는 만들어야 할 것
