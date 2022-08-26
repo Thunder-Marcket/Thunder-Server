@@ -1,8 +1,8 @@
-package com.example.demo.src.searchs;
+package com.example.demo.src.searches;
 
-import com.example.demo.src.searchs.model.GetBrands;
-import com.example.demo.src.searchs.model.GetSearch;
-import com.example.demo.src.searchs.model.GetSearchesRes;
+import com.example.demo.src.searches.model.GetBrands;
+import com.example.demo.src.searches.model.GetSearch;
+import com.example.demo.src.searches.model.PatchSearchesReq;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,10 +16,11 @@ public class SearchDao {
     private JdbcTemplate jdbcTemplate;
 
     public List<GetSearch> getSearches(int userIdx) {
-        String getSearchesQuery = "select u.userIdx, searchText\n" +
+        String getSearchesQuery =
+                "select u.userIdx, searchText\n" +
                 "from Users u\n" +
                 "join Searchs s on u.userIdx = s.userIdx\n" +
-                "where u.userIdx = ?\n" +
+                "where u.userIdx = ? and s.status = 'enable'\n" +
                 "order by s.updatedAt desc;";
 
         int getSearchesParams = userIdx;
@@ -56,5 +57,17 @@ public class SearchDao {
                         rs.getString("brandItemCnt"),
                         rs.getInt("isFollowing")),
                 getBrandNamesParams);
+    }
+
+    public int modifySearchStatus(int userIdx, PatchSearchesReq patchSearchesReq) {
+        String modifyStatusQuery = "update Searchs set status = 'disable' where userIdx = ? and searchIdx = ? ";
+        Object[] modifyStatusParams = new Object[]{userIdx, patchSearchesReq.getSearchIdx()};
+        return this.jdbcTemplate.update(modifyStatusQuery, modifyStatusParams);
+    }
+
+    public int modifyAllSearchStatus(int userIdx) {
+        String modifyStatusQuery = "update Searchs set status = 'disable' where userIdx = ? ";
+        int modifyStatusParams = userIdx;
+        return this.jdbcTemplate.update(modifyStatusQuery, modifyStatusParams);
     }
 }
