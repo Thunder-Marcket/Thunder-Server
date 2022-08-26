@@ -228,6 +228,7 @@ public class OrderDao {
         String soldItemQuery = "update Items\n" +
                 "set Items.status = case\n" +
                 "    when itemCount = 1 then 'sold'\n" +
+                "    ELSE Items.status\n" +
                 "    END,\n" +
                 "    Items.itemCount = case\n" +
                 "    when itemCount = 1 then 0\n" +
