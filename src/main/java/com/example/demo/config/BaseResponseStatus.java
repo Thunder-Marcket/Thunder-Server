@@ -37,6 +37,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_NAME( false, 2021 , "이미 존재하는 이름입니다." ),
 
     DELETED_USER( false, 2022 , "탈퇴한 유저입니다." ),
+    DELETED_SALESVIEWS(false, 2023, "이미 최근 본 상품에서 삭제된 상태입니다."),
 
 
     // [POST] /addresses

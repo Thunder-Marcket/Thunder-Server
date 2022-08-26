@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.DELETED_SALESVIEWS;
 
 @AllArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class SalesViewsProvider {
 
 
     public List<GetSalesViewsRes> getSalesViews(int userIdx) throws BaseException {
+
         try {
             List<GetSalesViewsRes> getSalesViewsResList = salesViewsDao.getSalesViews(userIdx);
             return getSalesViewsResList;
@@ -27,4 +29,5 @@ public class SalesViewsProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
 }

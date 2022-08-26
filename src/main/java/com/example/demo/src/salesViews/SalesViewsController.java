@@ -36,7 +36,7 @@ public class SalesViewsController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}")
-    public BaseResponse<List<GetSalesViewsRes>> getSalesViews(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetSalesViewsRes>> getSalesViews(@PathVariable("userIdx") int userIdx) throws BaseException {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             //userIdx와 접근한 유저가 같은지 확인

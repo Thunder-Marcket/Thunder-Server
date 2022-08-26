@@ -39,7 +39,7 @@ public class SalesViewsDao {
                 "from (\n" +
                 "     select userIdx, itemIdx, updatedAt\n" +
                 "    from SaleViews\n" +
-                "    where userIdx = ?\n" +
+                "    where userIdx = ? and status = 'enable'\n" +
                 ") sv\n" +
                 "join (\n" +
                 "    select itemIdx, itemName, cost, updatedAt, isSafePayment\n" +
@@ -65,4 +65,5 @@ public class SalesViewsDao {
         return this.jdbcTemplate.update(modifyStatusQuery, modifyStatusParams);
 
     }
+
 }
