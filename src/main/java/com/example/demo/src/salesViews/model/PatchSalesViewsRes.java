@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatchSalesViewsRes {
-    private List<SalesViews> viewItemIdx;
+    private List<SalesViews> viewItemIdxList;
 }
