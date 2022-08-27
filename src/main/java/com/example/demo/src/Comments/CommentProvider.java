@@ -2,7 +2,9 @@ package com.example.demo.src.Comments;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.Comments.model.GetStoreCommentListRes;
 import com.example.demo.src.Comments.model.GetStoreCommentRes;
+import com.example.demo.src.Comments.model.GetUserCommentListRes;
 import com.example.demo.src.Comments.model.GetUserCommentRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +25,18 @@ public class CommentProvider {
         this.commentDao = commentDao;
     }
 
-    public List<GetStoreCommentRes> getStoreComment(int userIdx) throws BaseException {
+    public GetStoreCommentListRes getStoreComment(int userIdx) throws BaseException {
         try{
-            List<GetStoreCommentRes> getStoreCommentRes = commentDao.getStoreComment(userIdx);
+            GetStoreCommentListRes getStoreCommentRes = commentDao.getStoreComment(userIdx);
             return getStoreCommentRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public List<GetUserCommentRes> getUserComment(int userIdx) throws BaseException {
+    public GetUserCommentListRes getUserComment(int userIdx) throws BaseException {
         try{
-            List<GetUserCommentRes> getUserCommentRes = commentDao.getUserComment(userIdx);
+            GetUserCommentListRes getUserCommentRes = commentDao.getUserComment(userIdx);
             return getUserCommentRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

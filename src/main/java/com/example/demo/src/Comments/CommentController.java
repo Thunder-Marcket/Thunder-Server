@@ -3,7 +3,9 @@ package com.example.demo.src.Comments;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.Comments.model.GetStoreCommentListRes;
 import com.example.demo.src.Comments.model.GetStoreCommentRes;
+import com.example.demo.src.Comments.model.GetUserCommentListRes;
 import com.example.demo.src.Comments.model.GetUserCommentRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -39,9 +41,9 @@ public class CommentController {
      */
     @ResponseBody
     @GetMapping("/store/{userIdx}")
-    public BaseResponse<List<GetStoreCommentRes>> getStoreComment(@PathVariable("userIdx") int userIdx){
+    public BaseResponse<GetStoreCommentListRes> getStoreComment(@PathVariable("userIdx") int userIdx){
         try{
-            List<GetStoreCommentRes> getStoreCommentRes = commentProvider.getStoreComment(userIdx);
+            GetStoreCommentListRes getStoreCommentRes = commentProvider.getStoreComment(userIdx);
             return new BaseResponse<>(getStoreCommentRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -55,13 +57,13 @@ public class CommentController {
      */
     @ResponseBody
     @GetMapping("/user/{userIdx}")
-    public BaseResponse<List<GetUserCommentRes>> getUserComment(@PathVariable("userIdx") int userIdx){
+    public BaseResponse<GetUserCommentListRes> getUserComment(@PathVariable("userIdx") int userIdx){
         try{
             if(userIdx != jwtService.getUserIdx()){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            List<GetUserCommentRes> getUserCommentRes = commentProvider.getUserComment(userIdx);
+            GetUserCommentListRes getUserCommentRes = commentProvider.getUserComment(userIdx);
             return new BaseResponse<>(getUserCommentRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

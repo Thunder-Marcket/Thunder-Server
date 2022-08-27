@@ -1,6 +1,8 @@
 package com.example.demo.src.Comments;
 
+import com.example.demo.src.Comments.model.GetStoreCommentListRes;
 import com.example.demo.src.Comments.model.GetStoreCommentRes;
+import com.example.demo.src.Comments.model.GetUserCommentListRes;
 import com.example.demo.src.Comments.model.GetUserCommentRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,7 @@ public class CommentDao {
     }
 
 
-    public List<GetStoreCommentRes> getStoreComment(int userIdx) {
+    public GetStoreCommentListRes getStoreComment(int userIdx) {
         String getStoreCommentQuery = "select\n" +
                 "    C.commentIdx,\n" +
                 "    C.buyUserIdx,\n" +
@@ -50,7 +52,7 @@ public class CommentDao {
                 "where U.userIdx = ?;";
         int getStoreCommentParam = userIdx;
 
-        return this.jdbcTemplate.query(getStoreCommentQuery,
+        List<GetStoreCommentRes> getStoreCommentRes = this.jdbcTemplate.query(getStoreCommentQuery,
                 (rs, rowNum) -> new GetStoreCommentRes(
                         rs.getInt("commentIdx"),
                         rs.getInt("buyUserIdx"),
@@ -62,9 +64,34 @@ public class CommentDao {
                         rs.getInt("isSafePayment")
                 ),
                 getStoreCommentParam);
+
+
+        return new GetStoreCommentListRes(getStoreCommentCount(userIdx), getStoreCommentRes);
     }
 
-    public List<GetUserCommentRes> getUserComment(int userIdx) {
+
+    public int getStoreCommentCount(int userIdx){
+        String getExistCommentQuery = "select exists(select C.commentIdx from Comments C inner join Users U on C.sellUserIdx = ?);";
+        int getExistCommentParam = userIdx;
+
+        int count = 0;
+
+        if(this.jdbcTemplate.queryForObject(getExistCommentQuery, int.class, getExistCommentParam) == 0){
+            return count;
+        }
+        else{
+            String getCommentCountQuery = "select count(Comments.buyUserIdx) AS commentCount from Comments where Comments.sellUserIdx = ? ;";
+            int getCommentParam = userIdx;
+
+            count = this.jdbcTemplate.queryForObject(getCommentCountQuery,
+                    int.class, getCommentParam);
+            return count;
+        }
+
+    }
+
+
+    public GetUserCommentListRes getUserComment(int userIdx) {
         String getUserCommentQuery = "select\n" +
                 "    C.commentIdx,\n" +
                 "    C.sellUserIdx,\n" +
@@ -91,7 +118,7 @@ public class CommentDao {
                 "where U.userIdx = ?;";
         int getUserCommentParams = userIdx;
 
-        return this.jdbcTemplate.query(getUserCommentQuery,
+        List<GetUserCommentRes> getUserCommentRes = this.jdbcTemplate.query(getUserCommentQuery,
                 (rs, rowNum) -> new GetUserCommentRes(
                         rs.getInt("commentIdx"),
                         rs.getInt("sellUserIdx"),
@@ -103,5 +130,24 @@ public class CommentDao {
                         rs.getInt("isSafePayment")
                 ),
                 getUserCommentParams);
+
+        return new GetUserCommentListRes(getUserCommentCount(userIdx), getUserCommentRes);
     }
+
+    public int getUserCommentCount(int userIdx){
+        String getExistCommentQuery = "select exists(select C.commentIdx from Comments C inner join Users U on C.buyUserIdx = ?);";
+        int getExistCommentParam = userIdx;
+
+        if(this.jdbcTemplate.queryForObject(getExistCommentQuery, int.class, getExistCommentParam) == 0){
+            return 0;
+        }
+
+        String getCommentCountQuery = "select count(Comments.sellUserIdx) AS commentCount from Comments where Comments.buyUserIdx= ? ;";
+        int getCommentParam = userIdx;
+
+        return this.jdbcTemplate.queryForObject(getCommentCountQuery,
+                int.class, getCommentParam);
+    }
+
+
 }
