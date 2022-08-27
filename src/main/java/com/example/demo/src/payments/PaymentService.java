@@ -18,9 +18,6 @@ public class PaymentService {
     private final PaymentProvider paymentProvider;
 
     public PostPaymentRes createPayment(int userIdx, PostPaymentReq postPaymentReq) throws BaseException {
-        if (paymentProvider.getPayment(userIdx) != null) {
-            throw new BaseException(POST_PAYMENT_EXIST_USER);
-        }
         try {
             int paymentIdx = paymentDao.createPayment(userIdx, postPaymentReq);
             return new PostPaymentRes(paymentIdx);
@@ -29,26 +26,26 @@ public class PaymentService {
         }
     }
 
-    public GetPaymentRes modifyPaymentMonthlyPlan(int userIdx, PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) throws BaseException {
+    public GetPaymentRes modifyPaymentMonthlyPlan(int userIdx, int paymentIdx, PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) throws BaseException {
         try {
             int result = paymentDao.modifyPaymentMonthlyPlan(userIdx, patchPaymentMonthlyPlanReq);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_PAYMENT_MONTHLYPLAN);
             }
-            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx);
+            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx, paymentIdx);
             return getPaymentRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public GetPaymentRes modifyPayment(int userIdx, PatchPaymentReq patchPaymentReq) throws BaseException {
+    public GetPaymentRes modifyPayment(int userIdx, int paymentIdx, PatchPaymentReq patchPaymentReq) throws BaseException {
         try {
             int result = paymentDao.modifyPayment(userIdx, patchPaymentReq);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_PAYMENT);
             }
-            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx);
+            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx, paymentIdx);
             return getPaymentRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

@@ -13,9 +13,9 @@ public class PaymentProvider {
 
     private final PaymentDao paymentDao;
 
-    public GetPaymentRes getPayment(int userIdx) throws BaseException {
+    public GetPaymentRes getPayment(int userIdx, int paymentIdx) throws BaseException {
         try {
-            GetPaymentRes getPaymentRes = paymentDao.getPayment(userIdx);
+            GetPaymentRes getPaymentRes = paymentDao.getPayment(paymentIdx);
             return getPaymentRes;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

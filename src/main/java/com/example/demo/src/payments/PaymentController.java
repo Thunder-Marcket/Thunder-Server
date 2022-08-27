@@ -50,19 +50,20 @@ public class PaymentController {
 
     /**
      * 결제수단 조회 API
-     * [GET] /payments/:userIdx
+     * [GET] /payments/:userIdx/:paymentIdx
      *
      * @return BaseResponse<GetPaymentRes>
      */
     @ResponseBody
-    @GetMapping("/{userIdx}")
-    public BaseResponse<GetPaymentRes> getPayment(@PathVariable("userIdx") int userIdx) {
+    @GetMapping("/{userIdx}/{paymentIdx}")
+    public BaseResponse<GetPaymentRes> getPayment(@PathVariable("userIdx") int userIdx,
+                                                  @PathVariable("paymentIdx") int paymentIdx) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx);
+            GetPaymentRes getPaymentRes = paymentProvider.getPayment(userIdx, paymentIdx);
             return new BaseResponse<>(getPaymentRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -71,20 +72,21 @@ public class PaymentController {
 
     /**
      * 할부 설정 API
-     * [PATCH] /payments/:userIdx/monthly-plan
+     * [PATCH] /payments/:userIdx/:paymentIdx/monthly-plan
      *
      * @return BaseResponse<GetPaymentRes>
      */
     @ResponseBody
-    @PatchMapping("/{userIdx}/monthly-plan")
+    @PatchMapping("/{userIdx}/{paymentIdx}/monthly-plan")
     public BaseResponse<GetPaymentRes> modifyPaymentMonthlyPlan(@PathVariable("userIdx") int userIdx,
+                                                                @PathVariable("paymentIdx") int paymentIdx,
                                                                 @RequestBody PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            GetPaymentRes getPaymentRes = paymentService.modifyPaymentMonthlyPlan(userIdx, patchPaymentMonthlyPlanReq);
+            GetPaymentRes getPaymentRes = paymentService.modifyPaymentMonthlyPlan(userIdx, paymentIdx,patchPaymentMonthlyPlanReq);
             return new BaseResponse<>(getPaymentRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -93,20 +95,21 @@ public class PaymentController {
 
     /**
      * 결제수단 수정 API
-     * [PATCH] /payments/:userIdx
+     * [PATCH] /payments/:userIdx/:paymentIdx
      *
      * @return BaseResponse<GetPaymentRes>
      */
     @ResponseBody
-    @PatchMapping("/{userIdx}")
+    @PatchMapping("/{userIdx}/{paymentIdx}")
     public BaseResponse<GetPaymentRes> modifyPayment(@PathVariable("userIdx") int userIdx,
+                                                     @PathVariable("paymentIdx") int paymentIdx,
                                                      @RequestBody PatchPaymentReq patchPaymentReq) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            GetPaymentRes getPaymentRes = paymentService.modifyPayment(userIdx, patchPaymentReq);
+            GetPaymentRes getPaymentRes = paymentService.modifyPayment(userIdx, paymentIdx, patchPaymentReq);
             return new BaseResponse<>(getPaymentRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

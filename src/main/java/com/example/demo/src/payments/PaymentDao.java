@@ -27,13 +27,13 @@ public class PaymentDao {
         return this.jdbcTemplate.queryForObject(lastInsertPaymentIdQuery, int.class);
     }
 
-    public GetPaymentRes getPayment(int userIdx) {
+    public GetPaymentRes getPayment(int paymentIdx) {
         String getPaymentQuery =
                 "select paymentIdx, i.accountIdx, accountName, monthlyPlan\n" +
                 "from Payments i\n" +
                 "    join Accounts A on i.accountIdx = A.accountIdx\n" +
-                "where i.userIdx = ?\n";
-        int getPaymentParams = userIdx;
+                "where i.paymentIdx = ?\n";
+        int getPaymentParams = paymentIdx;
         return this.jdbcTemplate.queryForObject(getPaymentQuery,
                 (rs, rowNum) -> new GetPaymentRes(
                         rs.getInt("paymentIdx"),
