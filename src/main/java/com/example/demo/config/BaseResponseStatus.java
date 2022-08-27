@@ -54,6 +54,7 @@ public enum BaseResponseStatus {
     POST_ORDERS_INVALID_ADDRESS(false, 2622, "사용할 수 없는 주소 입니다."),
     POST_ORDERS_INVALID_ITEM(false, 2623, "해당 상품이 존재하지 않습니다."),
 
+    POST_PAYMENT_EXIST_USER( false, 2624 ,"이미 유저의 결제수단이 존재합니다" ),
 
     /**
      * 3000 : Response 오류

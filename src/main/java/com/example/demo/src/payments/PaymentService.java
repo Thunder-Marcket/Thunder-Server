@@ -18,6 +18,9 @@ public class PaymentService {
     private final PaymentProvider paymentProvider;
 
     public PostPaymentRes createPayment(int userIdx, PostPaymentReq postPaymentReq) throws BaseException {
+        if (paymentProvider.getPayment(userIdx) != null) {
+            throw new BaseException(POST_PAYMENT_EXIST_USER);
+        }
         try {
             int paymentIdx = paymentDao.createPayment(userIdx, postPaymentReq);
             return new PostPaymentRes(paymentIdx);
