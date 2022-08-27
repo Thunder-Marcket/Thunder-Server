@@ -43,8 +43,8 @@ public class PaymentDao {
                 getPaymentParams);
     }
 
-    public int modifyPaymentMonthlyPlan(int userIdx, PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) {
-        int accountIdx = getAccountIdx(userIdx);
+    public int modifyPaymentMonthlyPlan(int paymentIdx, PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) {
+        int accountIdx = getAccountIdx(paymentIdx);
 
         String modifyPaymentQuery = "update Accounts set monthlyPlan = ? where accountIdx = ?";
         Object[] modifyPaymentParams = new Object[]{patchPaymentMonthlyPlanReq.getMonthlyPlan(), accountIdx};
@@ -52,17 +52,17 @@ public class PaymentDao {
         return this.jdbcTemplate.update(modifyPaymentQuery, modifyPaymentParams);
     }
 
-    public int modifyPayment(int userIdx, PatchPaymentReq patchPaymentReq) {
-        int accountIdx = getAccountIdx(userIdx);
+    public int modifyPayment(int paymentIdx, PatchPaymentReq patchPaymentReq) {
+        int accountIdx = getAccountIdx(paymentIdx);
         String modifyPaymentQuery = "update Accounts set accountName = ?, monthlyPlan = 1 where accountIdx = ?";
         Object[] modifyPaymentParams = new Object[]{patchPaymentReq.getAccountName(), accountIdx};
 
         return this.jdbcTemplate.update(modifyPaymentQuery, modifyPaymentParams);
     }
 
-    private int getAccountIdx(int userIdx) {
-        String getAccountQuery = "select accountIdx from Payments where userIdx = ?";
-        int getAccountParams = userIdx;
+    private int getAccountIdx(int paymentIdx) {
+        String getAccountQuery = "select accountIdx from Payments where paymentIdx = ?";
+        int getAccountParams = paymentIdx;
         return this.jdbcTemplate.queryForObject(getAccountQuery, int.class, getAccountParams);
     }
 }

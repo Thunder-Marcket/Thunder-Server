@@ -28,7 +28,7 @@ public class PaymentService {
 
     public GetPaymentRes modifyPaymentMonthlyPlan(int userIdx, int paymentIdx, PatchPaymentMonthlyPlanReq patchPaymentMonthlyPlanReq) throws BaseException {
         try {
-            int result = paymentDao.modifyPaymentMonthlyPlan(userIdx, patchPaymentMonthlyPlanReq);
+            int result = paymentDao.modifyPaymentMonthlyPlan(paymentIdx, patchPaymentMonthlyPlanReq);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_PAYMENT_MONTHLYPLAN);
             }
@@ -41,7 +41,7 @@ public class PaymentService {
 
     public GetPaymentRes modifyPayment(int userIdx, int paymentIdx, PatchPaymentReq patchPaymentReq) throws BaseException {
         try {
-            int result = paymentDao.modifyPayment(userIdx, patchPaymentReq);
+            int result = paymentDao.modifyPayment(paymentIdx, patchPaymentReq);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_PAYMENT);
             }
