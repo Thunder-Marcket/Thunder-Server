@@ -30,14 +30,14 @@ public class OrderDao {
                 "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
                 "                                                                      where I2.itemIdx = I.itemIdx)) AS itemImageUrl,\n" +
                 "    (select U.point from Users U where U.userIdx = ?) AS point,\n" +
-                "    I.cost AS itemCost,\n" +
+                "    concat(format(I.cost, 0), '원') AS itemCost,\n" +
                 "    case\n" +
                 "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 1\n" +
-                "            then concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer), '원')\n" +
+                "            then concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer), 0), '원')\n" +
                 "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 0\n" +
                 "            AND convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) < 3500\n" +
                 "            then '무료'\n" +
-                "        ELSE concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500, '원')\n" +
+                "        ELSE concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500, 0), '원')\n" +
                 "    END AS safePayCost,\n" +
                 "    case\n" +
                 "        when I.isIncludeOrderTip = 1 then '무료'\n" +
@@ -45,15 +45,15 @@ public class OrderDao {
                 "    END AS isIncludeOrderTip,\n" +
                 "       case\n" +
                 "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 1\n" +
-                "            then concat(convert(ROUND(I.cost / 100, 2) * 3.5 + I.cost - ?, unsigned integer), '원')\n" +
+                "            then concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5 + I.cost - ?, unsigned integer), 0), '원')\n" +
                 "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 0\n" +
                 "            AND convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) < 3500\n" +
-                "            then concat(I.cost - ?, '원')\n" +
+                "            then concat(FORMAT(I.cost - ?, 0), '원')\n" +
                 "        ELSE concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500 + I.cost - ?, '원')\n" +
                 "    END AS totalCost\n" +
                 "\n" +
                 "from Items I\n" +
-                "where I.itemIdx = ?";
+                "where I.itemIdx = ?;";
         Object[] getDirectOrderResParams = new Object[]{userIdx, usePoint, usePoint, usePoint, itemIdx};
 
         return this.jdbcTemplate.queryForObject(getDirectOrderResQuery,
@@ -96,14 +96,14 @@ public class OrderDao {
                     "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
                     "                                                                      where I2.itemIdx = I.itemIdx)) AS itemImageUrl,\n" +
                     "    (select U.point from Users U where U.userIdx = ?) AS point,\n" +
-                    "    I.cost AS itemCost,\n" +
+                    "    concat(format(I.cost, 0), '원') AS itemCost,\n" +
                     "    case\n" +
                     "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 1\n" +
-                    "            then concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer), '원')\n" +
+                    "            then concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer), 0), '원')\n" +
                     "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 0\n" +
                     "            AND convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) < 3500\n" +
                     "            then '무료'\n" +
-                    "        ELSE concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500, '원')\n" +
+                    "        ELSE concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500, 0), '원')\n" +
                     "    END AS safePayCost,\n" +
                     "    case\n" +
                     "        when I.isIncludeOrderTip = 1 then '무료'\n" +
@@ -111,10 +111,10 @@ public class OrderDao {
                     "    END AS isIncludeOrderTip,\n" +
                     "       case\n" +
                     "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 1\n" +
-                    "            then concat(convert(ROUND(I.cost / 100, 2) * 3.5 + I.cost - ?, unsigned integer), '원')\n" +
+                    "            then concat(FORMAT(convert(ROUND(I.cost / 100, 2) * 3.5 + I.cost - ?, unsigned integer), 0), '원')\n" +
                     "        when exists(select orderIdx from Orders inner join Users U2 on Orders.buyUserIdx = U2.userIdx) = 0\n" +
                     "            AND convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) < 3500\n" +
-                    "            then concat(I.cost - ?, '원')\n" +
+                    "            then concat(FORMAT(I.cost - ?, 0), '원')\n" +
                     "        ELSE concat(convert(ROUND(I.cost / 100, 2) * 3.5, unsigned integer) - 3500 + I.cost - ?, '원')\n" +
                     "    END AS totalCost\n" +
                     "\n" +
@@ -248,7 +248,7 @@ public class OrderDao {
         String getPurchaseQuery = "select\n" +
                 "    O.orderIdx,\n" +
                 "    I.itemName,\n" +
-                "    concat(I.cost, '원') AS itemCost,\n" +
+                "    concat(FORMAT(I.cost, 0), '원') AS itemCost,\n" +
                 "    (select I2.imageUrl from ItemImages\n" +
                 "                        inner join Images I2 on ItemImages.itemImageIdx = I2.itemImageIdx\n" +
                 "                        where ItemImages.itemIdx = I.itemIdx\n" +
@@ -282,7 +282,7 @@ public class OrderDao {
         String getSaleQuery = "select\n" +
                 "    O.orderIdx,\n" +
                 "    I.itemName,\n" +
-                "    concat(I.cost, '원') AS itemCost,\n" +
+                "    concat(FORMAT(I.cost, 0), '원') AS itemCost,\n" +
                 "    (select I2.imageUrl from ItemImages\n" +
                 "                        inner join Images I2 on ItemImages.itemImageIdx = I2.itemImageIdx\n" +
                 "                        where ItemImages.itemIdx = I.itemIdx\n" +
