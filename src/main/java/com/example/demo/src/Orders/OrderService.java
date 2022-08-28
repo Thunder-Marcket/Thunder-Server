@@ -31,6 +31,7 @@ public class OrderService {
 
         try{
             PostOrderRes postOrderRes = orderDao.createOrder(postOrderReq);
+            logger.warn("sadasd");
             return postOrderRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

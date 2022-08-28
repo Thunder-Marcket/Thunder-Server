@@ -36,7 +36,6 @@ public class OrderProvider {
         try{
 
             GetIndirectOrderRes getIndirectOrderRes = orderDao.getIndirectOrderRes(userIdx, itemIdx, usePoint);
-
             return getIndirectOrderRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);

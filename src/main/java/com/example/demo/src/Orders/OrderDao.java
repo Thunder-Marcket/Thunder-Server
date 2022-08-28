@@ -85,7 +85,7 @@ public class OrderDao {
             getAddressRes = new GetAddressRes(0, "배송지 없음", "없음", "없음", "없음");
 
         } finally {
-            if(addressRes.getAddressIdx() != 0){
+            if(addressRes != null){
                 getAddressRes = addressRes;
             }
             String getIndirectOrderQuery = "select\n" +
