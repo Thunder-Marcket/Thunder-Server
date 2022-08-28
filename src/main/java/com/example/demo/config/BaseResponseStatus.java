@@ -54,7 +54,7 @@ public enum BaseResponseStatus {
     POST_ORDERS_INVALID_ADDRESS(false, 2622, "사용할 수 없는 주소 입니다."),
     POST_ORDERS_INVALID_ITEM(false, 2623, "해당 상품이 존재하지 않습니다."),
 
-    POST_PAYMENT_EXIST_USER( false, 2624 ,"이미 유저의 결제수단이 존재합니다" ),
+    POST_FAIL_FOLLOWS( false, 2624 , "팔로우 하는데 실패했습니다." ),
 
 
     // [POST] / Items
@@ -94,6 +94,8 @@ public enum BaseResponseStatus {
 
     MODIFY_FAIL_SALESVIEWS_STATUS(false, 4020, "최근 본 상품 상태 삭제로 수정 실패"),
     MODIFY_FAIL_SEARCH_STATUS( false, 4021 , "검색어 상태 삭제로 수정 실패" ),
+
+    MODIFY_FAIL_FOLLOWS_STATUS( false, 4022 , "팔로우 상태 수정 실패" ),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
