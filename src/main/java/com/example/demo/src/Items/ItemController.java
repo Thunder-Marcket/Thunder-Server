@@ -112,6 +112,10 @@ public class ItemController {
                 return new BaseResponse<>(POST_ITEMS_INVAIlD_ITEM_NAME);
             }
 
+            if(postItemReq.getItemContent() == null || postItemReq.getItemContent().length() < 10){
+                return new BaseResponse<>(POST_ITEMS_UNDER_ITEM_CONTENT);
+            }
+
 
             PostItemRes postItemRes = itemService.createItem(postItemReq);
             return new BaseResponse<>(postItemRes);
