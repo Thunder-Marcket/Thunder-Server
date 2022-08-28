@@ -56,6 +56,13 @@ public enum BaseResponseStatus {
 
     POST_PAYMENT_EXIST_USER( false, 2624 ,"이미 유저의 결제수단이 존재합니다" ),
 
+
+    // [POST] / Items
+    POST_ITEMS_NEED_IMAGES(false, 2650, "상품 등록시 이미지가 필요합니다."),
+    POST_ITEMS_OVER_IMAGES(false, 2651, "상품 등록시 이미지가 12개를 넘어가면 안됩니다."),
+    POST_ITEMS_NEED_ITEM_NAME(false, 2652, "상품 등록시 상품 이름이 필요합니다."),
+    POST_ITEMS_INVAIlD_ITEM_NAME(false, 2653, "유효하지 않은 상품 이름입니다."),
+
     /**
      * 3000 : Response 오류
      */

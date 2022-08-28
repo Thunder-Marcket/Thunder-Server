@@ -3,8 +3,11 @@ package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Items.model.GetItemInfoRes;
 import com.example.demo.src.Items.model.GetItemListRes;
+import com.example.demo.src.Items.model.PostItemReq;
+import com.example.demo.src.Items.model.PostItemRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/items")
@@ -78,6 +83,42 @@ public class ItemController {
      }
 
 
+    /**
+     *  상품 등록 API
+     *  [POST] /items
+     * @return BaseResponse<PostItemRes>
+     */
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostItemRes> createItem(@RequestBody PostItemReq postItemReq){
+        try{
+            if(postItemReq.getUserIdx() != jwtService.getUserIdx()){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            if(postItemReq.getImageUrlList().size() == 0){
+                return new BaseResponse<>(POST_ITEMS_NEED_IMAGES);
+            }
+
+            if(postItemReq.getImageUrlList().size() > 12){
+                return new BaseResponse<>(POST_ITEMS_OVER_IMAGES);
+            }
+
+            if(postItemReq.getItemName() == null){
+                return new BaseResponse<>(POST_ITEMS_NEED_ITEM_NAME);
+            }
+
+            if(postItemReq.getItemName().length() > 45){
+                return new BaseResponse<>(POST_ITEMS_INVAIlD_ITEM_NAME);
+            }
+
+
+            PostItemRes postItemRes = itemService.createItem(postItemReq);
+            return new BaseResponse<>(postItemRes);
+        } catch (BaseException exception){
+         return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 

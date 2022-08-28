@@ -5,11 +5,13 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.Items.model.Comments;
 import com.example.demo.src.Items.model.GetItemInfoRes;
 import com.example.demo.src.Items.model.GetItemListRes;
+import com.example.demo.src.Items.model.PostItemReq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import sun.jvm.hotspot.oops.ObjArrayKlass;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -251,7 +253,7 @@ public class ItemDao {
         String getImageUrlQuery = "select Images.imageUrl\n" +
                 "from Items I\n" +
                 "inner join ItemImages II on I.itemIdx = II.itemIdx\n" +
-                "inner join Images on Images.itemImageIdx = II.itemImageIdx = Images.itemImageIdx\n" +
+                "inner join Images on Images.itemImageIdx = II.itemImageIdx\n" +
                 "where I.itemIdx = ?;";
         int getImageUrlParams = itemIdx;
 
@@ -466,6 +468,161 @@ public class ItemDao {
                 getCommentParams);
     }
 
+
+    public int createItem(PostItemReq postItemReq) {
+        // item 생성
+        String createItemQuery = "insert into Items (itemName, itemContent, cost, isIncludeOrderTip, itemCount, isCanExchange, isUsed, isSafePayment, userIdx, address, categoryIdx, subCategoryIdx, subSubcategoryIdx)\n" +
+                "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        Object[] createItemParam;
+
+        if(postItemReq.getSubCategoryIdx() == 0){
+            createItemParam = new Object[]{
+                    postItemReq.getItemName(),
+                    postItemReq.getItemContent(),
+                    postItemReq.getItemCost(),
+                    postItemReq.getIsIncludeOrderTip(),
+                    postItemReq.getItemCount(),
+                    postItemReq.getIsCanExchange(),
+                    postItemReq.getIsUsed(),
+                    postItemReq.getIsSafePayment(),
+                    postItemReq.getUserIdx(),
+                    postItemReq.getAddress(),
+                    postItemReq.getCategoryIdx(),
+                    null,
+                    null,
+            };
+        }
+        else if(postItemReq.getSubSubcategoryIdx() == 0){
+            createItemParam = new Object[]{
+                    postItemReq.getItemName(),
+                    postItemReq.getItemContent(),
+                    postItemReq.getItemCost(),
+                    postItemReq.getIsIncludeOrderTip(),
+                    postItemReq.getItemCount(),
+                    postItemReq.getIsCanExchange(),
+                    postItemReq.getIsUsed(),
+                    postItemReq.getIsSafePayment(),
+                    postItemReq.getUserIdx(),
+                    postItemReq.getAddress(),
+                    postItemReq.getCategoryIdx(),
+                    postItemReq.getSubCategoryIdx(),
+                    null,
+            };
+        }
+        else{
+            createItemParam = new Object[]{
+                    postItemReq.getItemName(),
+                    postItemReq.getItemContent(),
+                    postItemReq.getItemCost(),
+                    postItemReq.getIsIncludeOrderTip(),
+                    postItemReq.getItemCount(),
+                    postItemReq.getIsCanExchange(),
+                    postItemReq.getIsUsed(),
+                    postItemReq.getIsSafePayment(),
+                    postItemReq.getUserIdx(),
+                    postItemReq.getAddress(),
+                    postItemReq.getCategoryIdx(),
+                    postItemReq.getSubCategoryIdx(),
+                    postItemReq.getSubSubcategoryIdx(),
+            };
+        }
+
+        this.jdbcTemplate.update(createItemQuery, createItemParam);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        int itemIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+
+
+        // item과 연결된 이미지 생성
+        createItemImage(itemIdx, postItemReq.getImageUrlList());
+
+
+        // tag 생성
+        for(int i = 0; i < postItemReq.getTagNameList().size(); i++){
+            createItemTag(itemIdx, postItemReq.getTagNameList().get(i), 0);
+        }
+
+        if(getCategoryName(postItemReq.getCategoryIdx()) != null){
+            createItemTag(itemIdx, getCategoryName(postItemReq.getCategoryIdx()), 1);
+        }
+        if(getSubCategoryName(postItemReq.getSubCategoryIdx()) != null){
+            createItemTag(itemIdx, getSubCategoryName(postItemReq.getSubCategoryIdx()), 1);
+        }
+        if(getSubSubCategoryName(postItemReq.getSubSubcategoryIdx()) != null){
+            createItemTag(itemIdx, getSubSubCategoryName(postItemReq.getSubSubcategoryIdx()), 1);
+        }
+
+
+
+
+       return itemIdx;
+    }
+
+    public void createItemImage(int itemIdx, List<String> imageUrlList){
+        String createItemImageUrlQuery = "insert into ItemImages (itemIdx) VALUES (?)";
+        int createItemImageUrlParam = itemIdx;
+
+        this.jdbcTemplate.update(createItemImageUrlQuery, createItemImageUrlParam);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        int itemImageIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+
+
+        String createItemImageQuery = "insert into Images (imageUrl, itemImageIdx) values (?, ?);";
+        Object[] createItemImageParam;
+
+        for(int i =0 ; i < imageUrlList.size(); i++){
+            createItemImageParam = new Object[]{imageUrlList.get(i), itemImageIdx};
+            this.jdbcTemplate.update(createItemImageQuery, createItemImageParam);
+        }
+    }
+
+    public String getCategoryName(int categoryIdx){
+        String getCategoryExistQuery = "select exists(select C.categoryName from Categorys C where C.categoryIdx = ?);";
+
+        if(this.jdbcTemplate.queryForObject(getCategoryExistQuery, int.class,categoryIdx) == 1){
+            String getItemCategoryNameQuery = "select C.categoryName from Categorys C where C.categoryIdx = ?; ";
+
+            return this.jdbcTemplate.queryForObject(getItemCategoryNameQuery, String.class, categoryIdx);
+        }
+        else{
+            return null;
+        }
+    }
+
+    public String getSubCategoryName(int categoryIdx){
+        String getSubCategoryExistQuery = "select exists(select SC.categoryName from SubCategory SC where SC.subCategoryIdx = ?);";
+
+        if(this.jdbcTemplate.queryForObject(getSubCategoryExistQuery, int.class, categoryIdx) == 1) {
+            String getItemCategoryNameQuery = "select SC.categoryName from SubCategory SC where SC.subCategoryIdx = ?;";
+
+            return this.jdbcTemplate.queryForObject(getItemCategoryNameQuery, String.class, categoryIdx);
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    public String getSubSubCategoryName(int categoryIdx){
+        String getSubSubCategoryExistQuery = "select exists(select SSC.categoryName  from SubSubCategory SSC where SSC.subSubcategoryIdx = ?);";
+
+        if (this.jdbcTemplate.queryForObject(getSubSubCategoryExistQuery, int.class, categoryIdx) == 1) {
+            String getItemCategoryNameQuery = "select SSC.categoryName from SubSubCategory SSC where SSC.subSubcategoryIdx = ?;";
+            return this.jdbcTemplate.queryForObject(getItemCategoryNameQuery, String.class, categoryIdx);
+        }
+        else{
+            return null;
+        }
+    }
+
+    public void createItemTag(int itemIdx, String tagName, int isCategory){
+        String createItemTagQuery = "insert into Tags (tagName, itemIdx, isCategory) VALUES (?,?,?);";
+        Object[] createItemTagParam = new Object[]{tagName, itemIdx, isCategory};
+
+
+        this.jdbcTemplate.update(createItemTagQuery, createItemTagParam);
+    }
 
 }
 
