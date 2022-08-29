@@ -3,6 +3,8 @@ package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.Items.model.PatchItemReq;
+import com.example.demo.src.Items.model.PatchItemRes;
 import com.example.demo.src.Items.model.PostItemReq;
 import com.example.demo.src.Items.model.PostItemRes;
 import org.slf4j.Logger;
@@ -29,6 +31,15 @@ public class ItemService {
         try{
             int result = itemDao.createItem(postItemReq);
             return new PostItemRes(result);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PatchItemRes modifyItem(PatchItemReq patchItemReq) throws BaseException {
+        try{
+            PatchItemRes patchItemRes = itemDao.modifyItem(patchItemReq);
+            return patchItemRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

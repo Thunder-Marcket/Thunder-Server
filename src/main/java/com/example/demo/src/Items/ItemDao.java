@@ -2,6 +2,7 @@
 package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Items.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -671,5 +672,67 @@ public class ItemDao {
                 ),
                 getRegistItemParam);
     }
+
+    public int getExistItem(int itemIdx) {
+        String getExistItemQuery = "select exists(select I.itemIdx from Items I where I.itemIdx = ?);";
+        int getExistItemParam = itemIdx;
+
+        return this.jdbcTemplate.queryForObject(getExistItemQuery, int.class, getExistItemParam);
+    }
+
+    public PatchItemRes modifyItem(PatchItemReq patchItemReq, int itemIdx) {
+        String modifyItemQuery = "update Items set itemName = ?,\n" +
+                "                 address = ?,\n" +
+                "                 itemContent = ?,\n" +
+                "                 cost = ?,\n" +
+                "                 itemCount =?,\n" +
+                "                 isIncludeOrderTip = ?,\n" +
+                "                 isSafePayment = ?,\n" +
+                "                 isUsed = ?,\n" +
+                "                 isCanExchange = ?\n" +
+                "\n" +
+                "             where itemIdx = ?;";
+        Object[] modifyItemParams = new Object[]{
+                patchItemReq.getItemName(),
+                patchItemReq.getItemContent(),
+                patchItemReq.getItemCost(),
+                patchItemReq.getIsIncludeOrderTip(),
+                patchItemReq.getItemCount(),
+                patchItemReq.getIsCanExchange(),
+                patchItemReq.getIsUsed(),
+                patchItemReq.getIsSafePayment(),
+                patchItemReq.getAddress(),
+                itemIdx
+        };
+
+        this.jdbcTemplate.update(modifyItemQuery, modifyItemParams);
+        return new PatchItemRes(itemIdx);
+    }
+
+    public int existItemImage(int itemIdx){
+        String existItemImageQuery = "select exists(select ItemImages.itemImageIdx from ItemImages where ItemImages.itemIdx = ?);";
+
+        return this.jdbcTemplate.queryForObject(existItemImageQuery, int.class, itemIdx);
+    }
+
+    public int getItemImageIdx(int itemIdx) throws BaseException{
+        if(existItemImage(itemIdx) == 0){
+            throw new BaseException(BaseResponseStatus.POST_ITEMS_NEED_IMAGES);
+        }
+
+
+        String getItemImageQuery = "select\n" +
+                "    II.itemImageIdx\n" +
+                "from ItemImages II where II.itemIdx = ?";
+        int getItemImageParam = itemIdx;
+
+        return this.jdbcTemplate.queryForObject(getItemImageQuery, int.class, getItemImageParam);
+    }
+
+    public void modifyItemImage(PatchItemReq patchItemReq, int itemIdx) throws BaseException {
+        ;
+    }
+
+
 }
 

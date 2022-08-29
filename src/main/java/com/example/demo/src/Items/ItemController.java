@@ -142,7 +142,46 @@ public class ItemController {
         }
     }
 
+    /**
+     * 등록 상품 수정 API
+     * [PATCH] /items/:itemIdx
+     * @return BaseResponse<PatchItemRes>
+     */
+    @ResponseBody
+    @PatchMapping("/{itemIdx}")
+    public BaseResponse<PatchItemRes> modifyItem(@PathVariable("itemIdx") int itemIdx,
+                                                 @RequestBody PatchItemReq patchItemReq){
+        try{
+            if(itemProvider.getExistItem(itemIdx) == 0){
+                return new BaseResponse<>(PATCH_ITEMS_NULL_ITEM);
+            }
+            if(patchItemReq.getUserIdx() != jwtService.getUserIdx()){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
 
+            if(patchItemReq.getImageUrlList().size() == 0){
+                return new BaseResponse<>(POST_ITEMS_NEED_IMAGES);
+            }
+
+            if(patchItemReq.getImageUrlList().size() > 12){
+                return new BaseResponse<>(POST_ITEMS_OVER_IMAGES);
+            }
+
+            if(patchItemReq.getItemName() == null){
+                return new BaseResponse<>(POST_ITEMS_NEED_ITEM_NAME);
+            }
+
+            if(patchItemReq.getItemName().length() > 45){
+                return new BaseResponse<>(POST_ITEMS_INVAIlD_ITEM_NAME);
+            }
+
+
+            PatchItemRes patchItemRes = itemService.modifyItem(patchItemReq);
+            return new BaseResponse<>(patchItemRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 }

@@ -63,6 +63,9 @@ public enum BaseResponseStatus {
     POST_ITEMS_NEED_ITEM_NAME(false, 2652, "상품 등록시 상품 이름이 필요합니다."),
     POST_ITEMS_INVAIlD_ITEM_NAME(false, 2653, "유효하지 않은 상품 이름입니다."),
     POST_ITEMS_UNDER_ITEM_CONTENT(false, 2654, "상품 설명은 10글자를 넘어야 합니다."),
+    PATCH_ITEMS_NULL_ITEM(false, 2656, "변경하고자 하는 상품이 없습니다."),
+
+
     /**
      * 3000 : Response 오류
      */
