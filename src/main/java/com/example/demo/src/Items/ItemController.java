@@ -152,13 +152,12 @@ public class ItemController {
     public BaseResponse<PatchItemRes> modifyItem(@PathVariable("itemIdx") int itemIdx,
                                                  @RequestBody PatchItemReq patchItemReq){
         try{
-            if(itemProvider.getExistItem(itemIdx) == 0){
-                return new BaseResponse<>(PATCH_ITEMS_NULL_ITEM);
-            }
             if(patchItemReq.getUserIdx() != jwtService.getUserIdx()){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-
+            if(itemProvider.getExistItem(itemIdx, patchItemReq.getUserIdx()) == 0){
+                return new BaseResponse<>(PATCH_ITEMS_NULL_ITEM);
+            }
 //            if(patchItemReq.getImageUrlList().size() == 0){
 //                return new BaseResponse<>(POST_ITEMS_NEED_IMAGES);
 //            }
@@ -175,6 +174,9 @@ public class ItemController {
                 return new BaseResponse<>(POST_ITEMS_INVAIlD_ITEM_NAME);
             }
 
+            if(patchItemReq.getItemContent() == null || patchItemReq.getItemContent().length() < 10){
+                return new BaseResponse<>(POST_ITEMS_UNDER_ITEM_CONTENT);
+            }
 
             PatchItemRes patchItemRes = itemService.modifyItem(patchItemReq, itemIdx);
             return new BaseResponse<>(patchItemRes);

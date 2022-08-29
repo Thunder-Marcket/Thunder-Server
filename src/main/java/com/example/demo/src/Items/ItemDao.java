@@ -672,9 +672,9 @@ public class ItemDao {
                 getRegistItemParam);
     }
 
-    public int getExistItem(int itemIdx) {
-        String getExistItemQuery = "select exists(select I.itemIdx from Items I where I.itemIdx = ?);";
-        int getExistItemParam = itemIdx;
+    public int getExistItem(int itemIdx, int userIdx) {
+        String getExistItemQuery = "select exists(select I.itemIdx from Items I where I.itemIdx = ? and I.userIdx = ?);";
+        Object[] getExistItemParam = new Object[]{itemIdx, userIdx};
 
         return this.jdbcTemplate.queryForObject(getExistItemQuery, int.class, getExistItemParam);
     }
@@ -693,14 +693,14 @@ public class ItemDao {
                 "             where itemIdx = ?;";
         Object[] modifyItemParams = new Object[]{
                 patchItemReq.getItemName(),
+                patchItemReq.getAddress(),
                 patchItemReq.getItemContent(),
                 patchItemReq.getItemCost(),
-                patchItemReq.getIsIncludeOrderTip(),
                 patchItemReq.getItemCount(),
-                patchItemReq.getIsCanExchange(),
-                patchItemReq.getIsUsed(),
+                patchItemReq.getIsIncludeOrderTip(),
                 patchItemReq.getIsSafePayment(),
-                patchItemReq.getAddress(),
+                patchItemReq.getIsUsed(),
+                patchItemReq.getIsCanExchange(),
                 itemIdx
         };
 

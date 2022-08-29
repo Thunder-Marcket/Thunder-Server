@@ -71,9 +71,9 @@ public class ItemProvider {
         }
     }
 
-    public int getExistItem(int itemIdx) throws BaseException{
+    public int getExistItem(int itemIdx, int userIdx) throws BaseException{
         try{
-            int result = itemDao.getExistItem(itemIdx);
+            int result = itemDao.getExistItem(itemIdx, userIdx);
             return result;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
