@@ -67,6 +67,9 @@ public enum BaseResponseStatus {
     PATCH_ITEMS_NULL_ITEM(false, 2656, "변경하고자 하는 상품이 없습니다."),
 
 
+    // [POST] /comments
+    POST_COMMENTS_UNABLE_WRITE(false, 2700, "후기 작성이 불가능합니다."),
+    POST_COMMENTS_UNACCESS_ORDER(false,2701,"해당 주문 기록이 없습니다."),
     /**
      * 3000 : Response 오류
      */

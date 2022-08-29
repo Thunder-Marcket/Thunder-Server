@@ -78,8 +78,9 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem"),
-                        rs.getString("status")),
+                        rs.getInt("isAdItem")
+                        //rs.getString("status")
+                        ),
                 getItemParams);
     }
 
@@ -149,8 +150,9 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem"),
-                        rs.getString("status")),
+                        rs.getInt("isAdItem")
+                        //rs.getString("status")
+                ),
                 getSearchItemParam);
 
     }
@@ -340,8 +342,9 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem"),
-                        rs.getString("status")),
+                        rs.getInt("isAdItem")
+                        //rs.getString("status")
+                ),
                 getStoreItemListParams);
     }
 
@@ -417,8 +420,9 @@ public class ItemDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem"),
-                        rs.getString("status")),
+                        rs.getInt("isAdItem")
+                        //rs.getString("status")
+                ),
                 getSimilarItemListParams);
     }
 

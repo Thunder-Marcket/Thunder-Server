@@ -3,10 +3,7 @@ package com.example.demo.src.Comments;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.Comments.model.GetStoreCommentListRes;
-import com.example.demo.src.Comments.model.GetStoreCommentRes;
-import com.example.demo.src.Comments.model.GetUserCommentListRes;
-import com.example.demo.src.Comments.model.GetUserCommentRes;
+import com.example.demo.src.Comments.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +66,32 @@ public class CommentController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 리뷰 쓰기 API
+     * [POST] /comments/:orderIdx
+     * @return BaseResponse<PostCommentRes>
+     */
+//    @ResponseBody
+//    @PostMapping("/{orderIdx}")
+//    public BaseResponse<PostCommentRes> createComment(@RequestBody PostCommentReq postCommentReq){
+//        try{
+//            if(postCommentReq.getBuyUserIdx() != jwtService.getUserIdx()){
+//                return new BaseResponse<>(INVALID_USER_JWT);
+//            }
+//
+//            if(commentProvider.canCreateComment(postCommentReq) == 0){
+//                return new BaseResponse<>(POST_COMMENTS_UNABLE_WRITE);
+//            }
+//
+//
+//            PostCommentRes postCommentRes = commentService.createComment(postCommentReq);
+//            return new BaseResponse<>(postCommentRes);
+//        } catch (BaseException exception){
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
+
 
 
 }
