@@ -56,6 +56,7 @@ public enum BaseResponseStatus {
 
     POST_FAIL_FOLLOWS( false, 2624 , "팔로우 하는데 실패했습니다." ),
 
+    POST_FAIL_SALESVIEWS(false, 2625,"최근 본 상품을 생성하는데 실패했습니다."),
 
     // [POST] / Items
     POST_ITEMS_NEED_IMAGES(false, 2650, "상품 등록시 이미지가 필요합니다."),
@@ -99,6 +100,8 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_SEARCH_STATUS( false, 4021 , "검색어 상태 삭제로 수정 실패" ),
 
     MODIFY_FAIL_FOLLOWS_STATUS( false, 4022 , "팔로우 상태 수정 실패" ),
+
+    MODIFY_FAIL_SALESVIEWS_UPDATETIME(false, 4023 , "최근 본 상품 시간 수정 실패" ),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

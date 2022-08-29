@@ -62,4 +62,21 @@ public class SalesViewsDao {
 
     }
 
+    public int createSalesViews(int userIdx, int itemIdx) {
+        String createSalesViewsQuery = "select viewItemIdx from SaleViews where userIdx = ? and itemIdx = ?;";
+        Object[] createSalesViewsParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.update(createSalesViewsQuery, createSalesViewsParams);
+    }
+
+    public int checkSalesViews(int userIdx, int itemIdx) {
+        String checkQuery = "select exists(select viewItemIdx from SaleViews where userIdx = ? and itemIdx = ?);";
+        Object[] checkParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, checkParams);
+    }
+
+    public int modifySalesViewsUpdatedTime(int userIdx, int itemIdx) {
+        String modifyQuery = "update SaleViews set updatedAt = now() where userIdx = ? and itemIdx = ?";
+        Object[] modifyParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.update(modifyQuery, modifyParams);
+    }
 }

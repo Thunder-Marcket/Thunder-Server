@@ -30,4 +30,11 @@ public class SalesViewsProvider {
         }
     }
 
+    public int checkSalesViews(int userIdx, int itemIdx) throws BaseException {
+        try {
+            return salesViewsDao.checkSalesViews(userIdx, itemIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

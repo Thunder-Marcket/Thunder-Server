@@ -5,7 +5,9 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Items.model.*;
+import com.example.demo.src.salesViews.SalesViewsService;
 import com.example.demo.utils.JwtService;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -22,18 +25,12 @@ public class ItemController {
 
     @Autowired
     private final ItemProvider itemProvider;
-
     @Autowired
     private final JwtService jwtService;
     @Autowired
     private final ItemService itemService;
-
-    public ItemController(ItemProvider itemProvider, JwtService jwtService, ItemService itemService) {
-        this.itemProvider = itemProvider;
-        this.jwtService = jwtService;
-        this.itemService = itemService;
-    }
-
+    @Autowired
+    private final SalesViewsService salesViewsService;
 
     /**
      *  추천 상품 조회(최신순) API
@@ -63,16 +60,20 @@ public class ItemController {
 
     /**
      * 상품 상세 정보 가져오는 API
-     * [GET] /items/:itemIdx
+     * [GET] /items/:itemIdx/:userIdx
      * @return BaseResponse<GetItemInfoRes>
      */
      @ResponseBody
-     @GetMapping("/{itemIdx}")
-     public BaseResponse<GetItemInfoRes> getItemInfo(@PathVariable("itemIdx") int itemIdx){
+     @GetMapping("/{itemIdx}/{userIdx}")
+     public BaseResponse<GetItemInfoRes> getItemInfo(@PathVariable("itemIdx") int itemIdx,
+                                                     @PathVariable("userIdx") int userIdx){
          try{
-             int buyUserIdx = jwtService.getUserIdx();
-
-             GetItemInfoRes getItemInfoRes = itemProvider.getItemInfo(buyUserIdx, itemIdx);
+             int userIdxByJwt = jwtService.getUserIdx();
+             if(userIdx != userIdxByJwt){
+                 return new BaseResponse<>(INVALID_USER_JWT);
+             }
+             GetItemInfoRes getItemInfoRes = itemProvider.getItemInfo(userIdxByJwt, itemIdx);
+             salesViewsService.createSalesViews(userIdx, itemIdx);
              return new BaseResponse<>(getItemInfoRes);
          } catch (BaseException exception){
              return new BaseResponse<>(exception.getStatus());

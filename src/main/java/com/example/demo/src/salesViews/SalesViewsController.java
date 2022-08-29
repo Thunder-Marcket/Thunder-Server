@@ -63,7 +63,6 @@ public class SalesViewsController {
                                                                    @RequestBody PatchSalesViewsReq patchSalesViewsReq) throws BaseException {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
-            //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }

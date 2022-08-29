@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_SALESVIEWS_STATUS;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @AllArgsConstructor
 @Service
@@ -22,6 +21,7 @@ public class SalesViewsService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SalesViewsDao salesViewsDao;
+    private final SalesViewsProvider salesViewsProvider;
 
     public PatchSalesViewsRes modifySalesViewsStatus(PatchSalesViewsReq patchSalesViewsReq) throws BaseException {
         try {
@@ -38,6 +38,20 @@ public class SalesViewsService {
             return new PatchSalesViewsRes(viewItemIdxList);
         }catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void createSalesViews(int userIdx, int itemIdx) throws BaseException {
+        if (salesViewsProvider.checkSalesViews(userIdx, itemIdx) == 0) {
+            int result = salesViewsDao.createSalesViews(userIdx, itemIdx);
+            if (result == 0) {
+                throw new BaseException(POST_FAIL_SALESVIEWS);
+            }
+        } else {
+            int result = salesViewsDao.modifySalesViewsUpdatedTime(userIdx, itemIdx);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_SALESVIEWS_UPDATETIME);
+            }
         }
     }
 }
