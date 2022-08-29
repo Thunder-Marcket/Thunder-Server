@@ -2,10 +2,7 @@
 package com.example.demo.src.Items;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.Items.model.Comments;
-import com.example.demo.src.Items.model.GetItemInfoRes;
-import com.example.demo.src.Items.model.GetItemListRes;
-import com.example.demo.src.Items.model.PostItemReq;
+import com.example.demo.src.Items.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -624,5 +621,55 @@ public class ItemDao {
         this.jdbcTemplate.update(createItemTagQuery, createItemTagParam);
     }
 
+    public List<GetRegistItem> getRegistItem(int userIdx) {
+        String getRegistItemQuery = "select I.itemIdx,\n" +
+                "       concat(FORMAT(I.cost, 0), '원') AS cost,\n" +
+                "       I.itemName,\n" +
+                "       case\n" +
+                "           when I.address is null then '지역정보 없음'\n" +
+                "           ELSE I.address\n" +
+                "       END AS address,\n" +
+                "       case\n" +
+                "           when datediff(now(), I.createdAt) < 1 then concat(abs(hour(now()) - hour(I.createdAt)), '시간 전')\n" +
+                "           ELSE concat(datediff(now(), I.createdAt), '일 전')\n" +
+                "        END AS period,\n" +
+                "       (select Images.imageUrl from Images\n" +
+                "                 where Images.imageIdx = (select min(Images.imageIdx) from Images\n" +
+                "                                                                      inner join ItemImages II on Images.itemImageIdx = II.itemImageIdx\n" +
+                "                                                                      inner join Items I2 on II.itemIdx = I2.itemIdx\n" +
+                "                                                                      where I2.itemIdx = I.itemIdx)) AS imageUrl,\n" +
+                "       I.isSafePayment,\n" +
+                "\n" +
+                "\n" +
+                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       I.isCanCheck,\n" +
+                "\n" +
+                "       case\n" +
+                "           when I.status = 'sold' then '판매 완료'\n" +
+                "           ELSE '판매 중'\n" +
+                "       END AS status\n" +
+                "\n" +
+                "from Items I\n" +
+                "where I.userIdx = ?\n" +
+                "\n" +
+                "\n" +
+                "order by I.createdAt DESC;";
+        int getRegistItemParam = userIdx;
+
+        return this.jdbcTemplate.query(getRegistItemQuery,
+                (rs, rowNum) -> new GetRegistItem(
+                        rs.getInt("itemIdx"),
+                        rs.getString("cost"),
+                        rs.getString("itemName"),
+                        rs.getString("address"),
+                        rs.getString("period"),
+                        rs.getString("imageUrl"),
+                        rs.getInt("isSafePayment"),
+                        rs.getInt("likeCnt"),
+                        rs.getInt("isCanCheck"),
+                        rs.getString("status")
+                ),
+                getRegistItemParam);
+    }
 }
 

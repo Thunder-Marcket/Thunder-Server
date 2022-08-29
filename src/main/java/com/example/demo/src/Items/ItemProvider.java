@@ -5,6 +5,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.Items.model.GetItemInfoRes;
 import com.example.demo.src.Items.model.GetItemListRes;
+import com.example.demo.src.Items.model.GetRegistItem;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,15 @@ public class ItemProvider {
         }
 
 
+    }
+
+    public List<GetRegistItem> getRegistItem(int userIdx) throws BaseException {
+        try{
+            List<GetRegistItem> getItemListRes = itemDao.getRegistItem(userIdx);
+            return getItemListRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }
 

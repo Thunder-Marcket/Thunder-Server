@@ -4,10 +4,7 @@ package com.example.demo.src.Items;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.Items.model.GetItemInfoRes;
-import com.example.demo.src.Items.model.GetItemListRes;
-import com.example.demo.src.Items.model.PostItemReq;
-import com.example.demo.src.Items.model.PostItemRes;
+import com.example.demo.src.Items.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,6 +120,28 @@ public class ItemController {
          return new BaseResponse<>(exception.getStatus());
         }
     }
+
+
+    /**
+     * 등록 상품 조회 API
+     * [GET] /items/regist/:userIdx
+     * @return BaseResponse<List<GetItemListRes>>
+     */
+    @ResponseBody
+    @GetMapping("/regist/{userIdx}")
+    public BaseResponse<List<GetRegistItem>> getRegistItem(@PathVariable("userIdx") int userIdx){
+        try{
+            if(userIdx != jwtService.getUserIdx()){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            List<GetRegistItem> getItemListRes = itemProvider.getRegistItem(userIdx);
+            return new BaseResponse<>(getItemListRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 
