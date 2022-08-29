@@ -63,7 +63,7 @@ public class SalesViewsDao {
     }
 
     public int createSalesViews(int userIdx, int itemIdx) {
-        String createSalesViewsQuery = "select viewItemIdx from SaleViews where userIdx = ? and itemIdx = ?;";
+        String createSalesViewsQuery = "insert into SaleViews(userIdx, itemIdx) values(?,?)";
         Object[] createSalesViewsParams = new Object[]{userIdx, itemIdx};
         return this.jdbcTemplate.update(createSalesViewsQuery, createSalesViewsParams);
     }

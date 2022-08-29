@@ -32,7 +32,10 @@ public class SalesViewsProvider {
 
     public int checkSalesViews(int userIdx, int itemIdx) throws BaseException {
         try {
-            return salesViewsDao.checkSalesViews(userIdx, itemIdx);
+            logger.debug("checkSalesViews");
+            int result = salesViewsDao.checkSalesViews(userIdx, itemIdx);
+            logger.debug("result = {}", result);
+            return result;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

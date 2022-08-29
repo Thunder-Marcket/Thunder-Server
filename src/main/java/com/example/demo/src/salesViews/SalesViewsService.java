@@ -42,16 +42,19 @@ public class SalesViewsService {
     }
 
     public void createSalesViews(int userIdx, int itemIdx) throws BaseException {
+        logger.debug("createSalesViews");
         if (salesViewsProvider.checkSalesViews(userIdx, itemIdx) == 0) {
             int result = salesViewsDao.createSalesViews(userIdx, itemIdx);
             if (result == 0) {
                 throw new BaseException(POST_FAIL_SALESVIEWS);
             }
+            logger.debug("createSalesViews success");
         } else {
             int result = salesViewsDao.modifySalesViewsUpdatedTime(userIdx, itemIdx);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_SALESVIEWS_UPDATETIME);
             }
+            logger.debug("modifySalesViewsUpdateTime success");
         }
     }
 }
