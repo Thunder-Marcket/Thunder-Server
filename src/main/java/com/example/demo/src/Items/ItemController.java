@@ -159,13 +159,13 @@ public class ItemController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            if(patchItemReq.getImageUrlList().size() == 0){
-                return new BaseResponse<>(POST_ITEMS_NEED_IMAGES);
-            }
-
-            if(patchItemReq.getImageUrlList().size() > 12){
-                return new BaseResponse<>(POST_ITEMS_OVER_IMAGES);
-            }
+//            if(patchItemReq.getImageUrlList().size() == 0){
+//                return new BaseResponse<>(POST_ITEMS_NEED_IMAGES);
+//            }
+//
+//            if(patchItemReq.getImageUrlList().size() > 12){
+//                return new BaseResponse<>(POST_ITEMS_OVER_IMAGES);
+//            }
 
             if(patchItemReq.getItemName() == null){
                 return new BaseResponse<>(POST_ITEMS_NEED_ITEM_NAME);
@@ -176,7 +176,7 @@ public class ItemController {
             }
 
 
-            PatchItemRes patchItemRes = itemService.modifyItem(patchItemReq);
+            PatchItemRes patchItemRes = itemService.modifyItem(patchItemReq, itemIdx);
             return new BaseResponse<>(patchItemRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());

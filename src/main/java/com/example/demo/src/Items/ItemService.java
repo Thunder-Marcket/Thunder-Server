@@ -36,9 +36,9 @@ public class ItemService {
         }
     }
 
-    public PatchItemRes modifyItem(PatchItemReq patchItemReq) throws BaseException {
+    public PatchItemRes modifyItem(PatchItemReq patchItemReq, int itemIdx) throws BaseException {
         try{
-            PatchItemRes patchItemRes = itemDao.modifyItem(patchItemReq);
+            PatchItemRes patchItemRes = itemDao.modifyItem(patchItemReq, itemIdx);
             return patchItemRes;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
