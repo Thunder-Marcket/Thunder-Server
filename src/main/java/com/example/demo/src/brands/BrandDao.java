@@ -165,8 +165,8 @@ public class BrandDao {
                         rs.getInt("isLike"),
                         rs.getInt("likeCnt"),
                         rs.getInt("isCanCheck"),
-                        rs.getInt("isAdItem"),
-                        rs.getString("status")
+                        rs.getInt("isAdItem")
+                        //rs.getString("status")
                 ), getFollowBrandItemParams);
     }
 

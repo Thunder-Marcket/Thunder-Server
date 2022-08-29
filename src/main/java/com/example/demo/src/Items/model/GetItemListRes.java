@@ -20,6 +20,6 @@ public class GetItemListRes {
     private int likeCnt;
     private int isCanCheck;
     private int isAdCheck;
-    private String status;
+    //private String status;
 }
 

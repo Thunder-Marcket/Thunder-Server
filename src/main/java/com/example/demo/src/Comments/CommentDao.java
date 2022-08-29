@@ -1,9 +1,6 @@
 package com.example.demo.src.Comments;
 
-import com.example.demo.src.Comments.model.GetStoreCommentListRes;
-import com.example.demo.src.Comments.model.GetStoreCommentRes;
-import com.example.demo.src.Comments.model.GetUserCommentListRes;
-import com.example.demo.src.Comments.model.GetUserCommentRes;
+import com.example.demo.src.Comments.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,4 +147,7 @@ public class CommentDao {
     }
 
 
+//    public PostCommentRes createComment(PostCommentReq postCommentReq) {
+//        ;
+//    }
 }
