@@ -1,6 +1,7 @@
 package com.example.demo.src.chats;
 
 import com.example.demo.src.chats.model.GetChatRoomListRes;
+import com.example.demo.src.chats.model.GetChatRoomRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -54,5 +55,36 @@ public class ChatDao {
                         rs.getInt("storeUserIdx")
                 ), getChatRoomListParam);
 
+    }
+
+    public List<GetChatRoomRes> getChatRoom(int chatRoomIdx) {
+        String getChatRoomQuery = "select\n" +
+                "    C.userIdx,\n" +
+                "    C.message\n" +
+                "from ChatRooms CR\n" +
+                "inner join Chats C on CR.chatRoomIdx = C.chatRoomIdx\n" +
+                "where CR.chatRoomIdx = ?\n" +
+                "order by C.createdAt asc;";
+        int getChatRoomParam = chatRoomIdx;
+
+        return this.jdbcTemplate.query(getChatRoomQuery,
+                (rs, rowNum) -> new GetChatRoomRes(
+                        rs.getInt("userIdx"),
+                        rs.getString("message")
+                ), getChatRoomParam);
+    }
+
+    public int checkChatRoom(int userIdx, int chatRoomIdx) {
+        String checkChatRoomQuery = "select\n" +
+                "    case\n" +
+                "        when exists(select chatRoomIdx from ChatRooms where buyUserIdx = ? and chatRoomIdx = ?) = 1 then 1\n" +
+                "        when exists(select chatRoomIdx from ChatRooms\n" +
+                "                                    inner join Items I on ChatRooms.itemIdx = I.itemIdx\n" +
+                "                                    where I.userIdx = ? and chatRoomIdx = ?) = 1 then 1\n" +
+                "        ELSE 0\n" +
+                "    END";
+        Object[] checkChatRoomParams = new Object[]{userIdx, chatRoomIdx, userIdx, chatRoomIdx};
+
+        return this.jdbcTemplate.queryForObject(checkChatRoomQuery, int.class, checkChatRoomParams);
     }
 }

@@ -2,15 +2,14 @@ package com.example.demo.src.chats;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.chats.model.GetChatRoomListRes;
+import com.example.demo.src.chats.model.GetChatRoomRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,5 +54,24 @@ public class ChatController {
     }
 
 
+    /**
+     * 특정 채팅방의 채팅 내역들 가져오는 API
+     * [GET] /chat-rooms/:roomIdx
+     * @return BaseResponse<List<GetChatRoom>>
+     */
+    @ResponseBody
+    @GetMapping("/{roomIdx}")
+    public BaseResponse<List<GetChatRoomRes>> getChatRoom(@PathVariable("roomIdx") int chatRoomIdx){
+        try{
+            if(chatProvier.checkChatRoom(jwtService.getUserIdx(), chatRoomIdx) == 0){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
 
+
+            List<GetChatRoomRes> getChatRoomRes = chatProvier.getChatRoom(chatRoomIdx);
+            return new BaseResponse<>(getChatRoomRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
