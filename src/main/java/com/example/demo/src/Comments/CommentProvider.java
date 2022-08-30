@@ -40,18 +40,20 @@ public class CommentProvider {
         }
     }
 
-//    public int canCreateComment(PostCommentReq postCommentReq) throws BaseException {
-//        try{
-//            if(commentDao.existOrder(postCommentReq) == 0){
-//                throw new BaseException(POST_COMMENTS_UNACCESS_ORDER);
-//            }
-//
-//
-//
-//        } catch (Exception exception){
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//
-//
-//    }
+    public int canCreateComment(PostCommentReq postCommentReq, int orderIdx) throws BaseException {
+        if(commentDao.existOrder(postCommentReq, orderIdx) == 0){
+            throw new BaseException(POST_COMMENTS_UNACCESS_ORDER);
+        }
+
+        if(commentDao.existComment(postCommentReq, orderIdx) == 1){
+            throw new BaseException(POST_COMMENTS_EXIST_COMMENT);
+        }
+
+        try{
+            return 1;
+
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

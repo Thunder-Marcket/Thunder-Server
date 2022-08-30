@@ -147,7 +147,94 @@ public class CommentDao {
     }
 
 
-//    public PostCommentRes createComment(PostCommentReq postCommentReq) {
-//        ;
-//    }
+    public PostCommentRes createComment(PostCommentReq postCommentReq, int orderIdx) {
+        logger.warn("createComment in");
+        CommentItem commentItem = getCommentItem(orderIdx);
+        logger.warn("getCommentItem out");
+
+        String createCommentQuery = "insert into Comments (star, buyUserIdx, sellUserIdx, commentText, isSafePayment, orderIdx) VALUES (?,?,?,?,?,?);";
+        Object[] createCommentParams = new Object[]{
+                postCommentReq.getStar(),
+                postCommentReq.getBuyUserIdx(),
+                commentItem.getSellUserIdx(),
+                postCommentReq.getCommentText(),
+                commentItem.getIsSafePayment(),
+                orderIdx
+        };
+
+        this.jdbcTemplate.update(createCommentQuery, createCommentParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        int commentIdx = this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+
+        int commentImageIdx = createCommentImage(commentIdx);
+
+        for(int i = 0; i < postCommentReq.getCommentImageList().size(); i++){
+            createImage(commentImageIdx, postCommentReq.getCommentImageList().get(i));
+        }
+        logger.warn("createComment out");
+        return new PostCommentRes(this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class));
+    }
+
+    public int existOrder(PostCommentReq postCommentReq, int orderIdx) {
+        logger.warn("existOrder in");
+        String existOrderQuery = "select exists(select O.orderIdx from Orders O where O.buyUserIdx = ? and O.orderIdx = ?);";
+        Object[] existOrderParam = new Object[]{postCommentReq.getBuyUserIdx(), orderIdx};
+
+        logger.warn("existOrder out");
+        return this.jdbcTemplate.queryForObject(existOrderQuery, int.class, existOrderParam);
+    }
+
+
+
+    public CommentItem getCommentItem(int orderIdx){
+        logger.warn("getCommentItem in");
+
+        String commentItemQuery = "select\n" +
+                "    I.userIdx,\n" +
+                "    I.isSafePayment\n" +
+                "from Orders O\n" +
+                "inner join Items I on O.itemIdx = I.itemIdx where O.orderIdx = ?;";
+        Object[] commentItemParams = new Object[]{orderIdx};
+
+        return this.jdbcTemplate.queryForObject(commentItemQuery,
+                (rs, rowNum) -> new CommentItem(
+                        rs.getInt("userIdx"),
+                        rs.getInt("isSafePayment")
+                ), commentItemParams);
+    }
+
+
+    public int createCommentImage(int commentIdx){
+        logger.warn("createCommentImage in");
+        String createImageQuery = "insert into CommentImages (commentIdx) VALUES (?);";
+        int createImageParam = commentIdx;
+
+        this.jdbcTemplate.update(createImageQuery, createImageParam);
+
+        logger.warn("createCommentImage out");
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+    }
+
+
+    public void createImage(int commentImageIdx, String imageUrl){
+        logger.warn("createImage in");
+
+        String createImageQuery = "insert into Images (commentImageIdx, imageUrl)  VALUES (?,?);";
+        Object[] createImageParam = new Object[]{commentImageIdx, imageUrl};
+
+        this.jdbcTemplate.update(createImageQuery, createImageParam);
+        logger.warn("createImage out");
+    }
+
+
+    public int existComment(PostCommentReq postCommentReq, int orderIdx) {
+        String existCommentQuery = "select exists(select C.commentIdx\n" +
+                "              from Comments C\n" +
+                "              where C.orderIdx = ?);";
+        int existCommentParam = orderIdx;
+
+        return this.jdbcTemplate.queryForObject(existCommentQuery, int.class, existCommentParam);
+    }
 }

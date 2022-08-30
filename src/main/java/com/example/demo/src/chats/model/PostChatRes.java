@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetChatRoomRes {
-    private int userIdx;
-    private String message;
+public class PostChatRes {
+    private int chatRoomIdx;
 }

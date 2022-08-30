@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
+
 
 @Service
 public class CommentService {
@@ -24,13 +25,19 @@ public class CommentService {
         this.commentProvider = commentProvider;
     }
 
-//    public PostCommentRes createComment(PostCommentReq postCommentReq) throws BaseException {
-//        try{
-//            PostCommentRes postCommentRes = commentDao.createComment(postCommentReq);
-//            return postCommentRes;
-//        } catch (Exception exception){
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//
-//    }
+    public PostCommentRes createComment(PostCommentReq postCommentReq, int orderIdx) throws BaseException {
+        if(commentProvider.canCreateComment(postCommentReq, orderIdx) == 0){
+            throw new BaseException(POST_COMMENTS_UNABLE_WRITE);
+        }
+
+
+
+        try{
+            PostCommentRes postCommentRes = commentDao.createComment(postCommentReq, orderIdx);
+            return postCommentRes;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
 }
