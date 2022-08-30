@@ -72,25 +72,27 @@ public class CommentController {
      * [POST] /comments/:orderIdx
      * @return BaseResponse<PostCommentRes>
      */
-//    @ResponseBody
-//    @PostMapping("/{orderIdx}")
-//    public BaseResponse<PostCommentRes> createComment(@RequestBody PostCommentReq postCommentReq){
-//        try{
-//            if(postCommentReq.getBuyUserIdx() != jwtService.getUserIdx()){
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            }
-//
-//            if(commentProvider.canCreateComment(postCommentReq) == 0){
-//                return new BaseResponse<>(POST_COMMENTS_UNABLE_WRITE);
-//            }
-//
-//
-//            PostCommentRes postCommentRes = commentService.createComment(postCommentReq);
-//            return new BaseResponse<>(postCommentRes);
-//        } catch (BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    @ResponseBody
+    @PostMapping("/{orderIdx}")
+    public BaseResponse<PostCommentRes> createComment(@RequestBody PostCommentReq postCommentReq,
+                                                      @PathVariable("orderIdx") int orderIdx){
+        try{
+            if(postCommentReq.getBuyUserIdx() != jwtService.getUserIdx()){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            if(commentProvider.canCreateComment(postCommentReq, orderIdx) == 0){
+                return new BaseResponse<>(POST_COMMENTS_UNABLE_WRITE);
+            }
+
+
+
+            PostCommentRes postCommentRes = commentService.createComment(postCommentReq, orderIdx);
+            return new BaseResponse<>(postCommentRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 

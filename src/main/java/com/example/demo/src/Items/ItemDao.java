@@ -52,7 +52,7 @@ public class ItemDao {
                 "            ELSE 0\n" +
                 "        END isLike,\n" +
                 "\n" +
-                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       (select count(Likes.status = 'enable') from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isAdItem,\n" +
                 "       case\n" +
@@ -119,7 +119,7 @@ public class ItemDao {
                 "            ELSE 0\n" +
                 "        END isLike,\n" +
                 "\n" +
-                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       (select count(Likes.status = 'enable') from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isAdItem,\n" +
                 "       case\n" +
@@ -177,7 +177,7 @@ public class ItemDao {
                 "               then 1\n" +
                 "            ELSE 0\n" +
                 "        END isLike,\n" +
-                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCount,\n" +
+                "       (select count(Likes.status = 'enable') from Likes where I.itemIdx = Likes.itemIdx) AS likeCount,\n" +
                 "\n" +
                 "       concat(I.itemCount, '개') AS itemCount,\n" +
                 "       I.isCanExchange,\n" +
@@ -311,7 +311,7 @@ public class ItemDao {
                 "            ELSE 0\n" +
                 "        END isLike,\n" +
                 "\n" +
-                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       (select count(Likes.status = 'enable') from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isAdItem,\n" +
                 "       case\n" +
@@ -387,7 +387,7 @@ public class ItemDao {
                 "            ELSE 0\n" +
                 "        END isLike,\n" +
                 "\n" +
-                "       (select count(likeIdx) from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
+                "       (select count(Likes.status = 'enable') from Likes where I.itemIdx = Likes.itemIdx) AS likeCnt,\n" +
                 "       I.isCanCheck,\n" +
                 "       I.isAdItem,\n" +
                 "       case\n" +

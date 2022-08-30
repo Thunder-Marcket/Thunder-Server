@@ -70,6 +70,8 @@ public enum BaseResponseStatus {
     // [POST] /comments
     POST_COMMENTS_UNABLE_WRITE(false, 2700, "후기 작성이 불가능합니다."),
     POST_COMMENTS_UNACCESS_ORDER(false,2701,"해당 주문 기록이 없습니다."),
+    POST_COMMENTS_EXIST_COMMENT(false, 2702, "해당 주문에 대해 이미 후기가 작성되었습니다."),
+
     /**
      * 3000 : Response 오류
      */
