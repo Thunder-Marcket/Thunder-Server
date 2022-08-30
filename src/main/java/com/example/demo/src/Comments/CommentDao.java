@@ -152,13 +152,14 @@ public class CommentDao {
         CommentItem commentItem = getCommentItem(orderIdx);
         logger.warn("getCommentItem out");
 
-        String createCommentQuery = "insert into Comments (star, buyUserIdx, sellUserIdx, commentText, isSafePayment) VALUES (?,?,?,?,?);";
+        String createCommentQuery = "insert into Comments (star, buyUserIdx, sellUserIdx, commentText, isSafePayment, orderIdx) VALUES (?,?,?,?,?,?);";
         Object[] createCommentParams = new Object[]{
                 postCommentReq.getStar(),
                 postCommentReq.getBuyUserIdx(),
                 commentItem.getSellUserIdx(),
                 postCommentReq.getCommentText(),
-                commentItem.getIsSafePayment()
+                commentItem.getIsSafePayment(),
+                orderIdx
         };
 
         this.jdbcTemplate.update(createCommentQuery, createCommentParams);
@@ -228,10 +229,12 @@ public class CommentDao {
     }
 
 
-//    public int existComment(PostCommentReq postCommentReq, int orderIdx) {
-//        String existCommentQuery = "";
-//        Object[] existCommentParam = new Object[]{};
-//
-//        return this.jdbcTemplate.queryForObject(existCommentQuery, int.class, existCommentParam);
-//    }
+    public int existComment(PostCommentReq postCommentReq, int orderIdx) {
+        String existCommentQuery = "select exists(select C.commentIdx\n" +
+                "              from Comments C\n" +
+                "              where C.orderIdx = ?);";
+        int existCommentParam = orderIdx;
+
+        return this.jdbcTemplate.queryForObject(existCommentQuery, int.class, existCommentParam);
+    }
 }
