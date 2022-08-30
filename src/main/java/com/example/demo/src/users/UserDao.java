@@ -15,19 +15,6 @@ public class UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
-//    public List<GetUserRes> getUsers(){
-//        String getUsersQuery = "select * from UserInfo";
-//        return this.jdbcTemplate.query(getUsersQuery,
-//                (rs,rowNum) -> new GetUserRes(
-//                        rs.getInt("userIdx"),
-//                        rs.getString("userName"),
-//                        rs.getString("ID"),
-//                        rs.getString("Email"),
-//                        rs.getString("password"))
-//                );
-//    }
-
-
     public GetUserRes getUser(int userIdx) {
         String getUserQuery =
                 "select profileImgUrl, userName, grade, isSelfVerification\n" +
@@ -39,12 +26,13 @@ public class UserDao {
                 "from (\n" +
                 "    select profileImgUrl, userName, grade, isSelfVerification, userIdx\n" +
                 "    from Users\n" +
-                "    where userIdx = ? \n" +
+                "    where userIdx = ?\n" +
                 ") u\n" +
                 "left join (\n" +
                 "    select count(likeIdx) as likeCnt, l.userIdx\n" +
                 "    from Likes l\n" +
                 "        join Items i on i.itemIdx = l.itemIdx\n" +
+                "    where l.status = 'enable'\n" +
                 "    group by l.userIdx\n" +
                 ") ll on u.userIdx = ll.userIdx\n" +
                 "left join (\n" +
@@ -55,13 +43,16 @@ public class UserDao {
                 "left join (\n" +
                 "    select count(followerUserIdx) as followerCnt, followingUserIdx\n" +
                 "    from Follows f\n" +
+                "    where f.status = 'enable'\n" +
                 "    group by f.followingUserIdx\n" +
                 ") f on f.followingUserIdx = u.userIdx\n" +
                 "left join (\n" +
                 "    select count(followingUserIdx) as followingCnt, followerUserIdx\n" +
                 "    from Follows f\n" +
+                "    where f.status = 'enable'\n" +
                 "    group by f.followerUserIdx\n" +
                 ") ff on ff.followerUserIdx = u.userIdx;";
+
         int getUserParam = userIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(

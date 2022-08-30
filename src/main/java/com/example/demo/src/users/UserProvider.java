@@ -24,16 +24,6 @@ public class UserProvider {
     private final UserDao userDao;
     private final JwtService jwtService;
 
-//    public List<GetUserRes> getUsers() throws BaseException{
-//        try{
-//            List<GetUserRes> getUserRes = userDao.getUsers();
-//            return getUserRes;
-//        }
-//        catch (Exception exception) {
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//    }
-
     public GetUserRes getUser(int userIdx) throws BaseException {
         try {
             GetUserRes getUserRes = userDao.getUser(userIdx);
