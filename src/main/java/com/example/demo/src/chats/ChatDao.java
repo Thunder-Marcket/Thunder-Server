@@ -2,6 +2,8 @@ package com.example.demo.src.chats;
 
 import com.example.demo.src.chats.model.GetChatRoomListRes;
 import com.example.demo.src.chats.model.GetChatRoomRes;
+import com.example.demo.src.chats.model.PostChatReq;
+import com.example.demo.src.chats.model.PostChatRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -86,5 +88,50 @@ public class ChatDao {
         Object[] checkChatRoomParams = new Object[]{userIdx, chatRoomIdx, userIdx, chatRoomIdx};
 
         return this.jdbcTemplate.queryForObject(checkChatRoomQuery, int.class, checkChatRoomParams);
+    }
+
+    public int checkChatRoomByItem(int userIdx, int itemIdx){
+        String checkChatRoomQuery = "select\n" +
+                "    case\n" +
+                "        when exists(select CR.chatRoomIdx from ChatRooms CR where CR.itemIdx = ? and CR.buyUserIdx = ?) = 1\n" +
+                "            then (select CR.chatRoomIdx from ChatRooms CR where CR.itemIdx = ? and CR.buyUserIdx = ?)\n" +
+                "        ELSE 0\n" +
+                "    END";
+        Object[] checkChatRoomParams = new Object[]{itemIdx, userIdx, itemIdx, userIdx};
+
+        return this.jdbcTemplate.queryForObject(checkChatRoomQuery, int.class, checkChatRoomParams);
+    }
+
+
+    public int createChatRoom(int userIdx, int itemIdx) {
+        String createChatRoomQuery = "insert into ChatRooms (buyUserIdx, itemIdx) VALUES (?,?);";
+        Object createChatRoomParams = new Object[]{userIdx, itemIdx};
+
+        this.jdbcTemplate.update(createChatRoomQuery, createChatRoomParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+
+    }
+
+
+    public PostChatRes createChat(PostChatReq postChatReq) {
+        String createChatQuery = "insert into Chats (userIdx, message, chatRoomIdx) VALUES (?,?,?);";
+        Object[] createChatParams = new Object[]{
+                postChatReq.getUserIdx(),
+                postChatReq.getMessage(),
+                postChatReq.getChatRoomIdx()
+        };
+
+        this.jdbcTemplate.update(createChatQuery, createChatParams);
+
+        return new PostChatRes(postChatReq.getChatRoomIdx());
+    }
+
+    public int checkItem(int itemIdx) {
+        String checkItemQuery = "select exists(select I.itemIdx from Items I where I.itemIdx = ?);";
+        int checkItemParam = itemIdx;
+
+        return this.jdbcTemplate.queryForObject(checkItemQuery, int.class, checkItemParam);
     }
 }
