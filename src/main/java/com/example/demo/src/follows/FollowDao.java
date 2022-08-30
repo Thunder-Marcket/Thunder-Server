@@ -1,10 +1,15 @@
 package com.example.demo.src.follows;
 
+import com.example.demo.src.follows.model.Following;
+import com.example.demo.src.follows.model.FollowingUserItem;
+import com.example.demo.src.follows.model.GetFollowsRes;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Repository
@@ -41,5 +46,48 @@ public class FollowDao {
         String modifyFollowingQuery = "update Follows set status = 'enable' where followerUserIdx = ? and followingUserIdx = ?;\n";
         Object[] modifyFollowingParams = new Object[]{userIdx, followingUserIdx};
         return this.jdbcTemplate.update(modifyFollowingQuery, modifyFollowingParams);
+    }
+
+    public List<Following> getFollowings(int userIdx) {
+        String getQuery =
+                "select u.userIdx, i.itemIdx, u.profileImgUrl, u.userName\n" +
+                "     , count(i.itemIdx) as itemCnt\n" +
+                "     , count(followingUserIdx) as followerCnt\n" +
+                "from Items i\n" +
+                "    join(\n" +
+                "        select userIdx, followingUserIdx, followerUserIdx, profileImgUrl, userName\n" +
+                "        from Users u\n" +
+                "            left join Follows F on u.userIdx = F.followingUserIdx\n" +
+                "            group by F.followingUserIdx\n" +
+                "    ) u on u.userIdx = i.userIdx\n" +
+                "where u.followerUserIdx = ?\n" +
+                "group by u.userIdx;";
+        int getParams = userIdx;
+        return this.jdbcTemplate.query(getQuery,
+                (rs, rowNum) -> new Following(
+                        rs.getInt("userIdx"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("userName"),
+                        rs.getInt("itemCnt"),
+                        rs.getInt("followerCnt")),
+                getParams);
+    }
+
+    public List<FollowingUserItem> getFollowingUserItemList(int followingUserIdx) {
+        String getQuery =
+                "select i.itemIdx, cost\n" +
+                "    , (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
+                "                                                                    from Images\n" +
+                "                                                                        inner join ItemImages ii on Images.itemImageIdx = ii.itemImageIdx\n" +
+                "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
+                "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl\n" +
+                "from Items i\n" +
+                "where userIdx = ?;";
+        int getParams = followingUserIdx;
+        return this.jdbcTemplate.query(getQuery,
+                (rs, rowNum) -> new FollowingUserItem(
+                        rs.getString("imageUrl"),
+                        rs.getInt("cost")),
+                getParams);
     }
 }
