@@ -85,12 +85,32 @@ public class SearchController {
     public BaseResponse<GetSearchesRes> modifyAllSearchStatus(@PathVariable("userIdx") int userIdx) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
-            //userIdx와 접근한 유저가 같은지 확인
             if (userIdx != userIdxByJwt) {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
             GetSearchesRes getSearchesRes = searchService.modifyAllSearchStatus(userIdx);
             return new BaseResponse<>(getSearchesRes);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 유저 검색하기
+     * [GET] /searches/users/:userIdx?search=
+     * @return BaseResponse<List<GetSearchUserRes>>
+     */
+    @ResponseBody
+    @GetMapping("/users/{userIdx}")
+    public BaseResponse<List<GetSearchUserRes>> getSearchUsers(@PathVariable("userIdx") int userIdx,
+                                                        @RequestParam("search") String search) {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if (userIdx != userIdxByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetSearchUserRes> getSearchUserResList = searchProvider.getSearchUsers(search);
+            return new BaseResponse<>(getSearchUserResList);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

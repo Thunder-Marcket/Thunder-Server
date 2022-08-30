@@ -2,6 +2,7 @@ package com.example.demo.src.searches;
 
 import com.example.demo.src.searches.model.GetBrands;
 import com.example.demo.src.searches.model.GetSearch;
+import com.example.demo.src.searches.model.GetSearchUserRes;
 import com.example.demo.src.searches.model.PatchSearchesReq;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,5 +71,31 @@ public class SearchDao {
         String modifyStatusQuery = "update Searchs set status = 'disable' where userIdx = ? ";
         int modifyStatusParams = userIdx;
         return this.jdbcTemplate.update(modifyStatusQuery, modifyStatusParams);
+    }
+
+    public List<GetSearchUserRes> getSearchUsers( String search) {
+        String getQuery =
+                "select u.userIdx, profileImgUrl, userName, followerCnt, itemCnt\n" +
+                "from Users u\n" +
+                "    join (\n" +
+                "        select count(followerUserIdx) as followerCnt, followingUserIdx\n" +
+                "        from Follows\n" +
+                "        group by followingUserIdx\n" +
+                "    ) F on u.userIdx = F.followingUserIdx\n" +
+                "    join (\n" +
+                "        select count(itemIdx) as itemCnt, userIdx\n" +
+                "        from Items i\n" +
+                "        group by i.userIdx\n" +
+                "    ) I on u.userIdx = I.userIdx\n" +
+                "where userName like ? ";
+        String getParams = "%"+search+"%";
+        return this.jdbcTemplate.query(getQuery,
+                (rs, rowNum) -> new GetSearchUserRes(
+                        rs.getInt("userIdx"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("userName"),
+                        rs.getInt("followerCnt"),
+                        rs.getInt("itemCnt")),
+                getParams);
     }
 }

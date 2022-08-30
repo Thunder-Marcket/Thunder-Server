@@ -3,6 +3,7 @@ package com.example.demo.src.searches;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.searches.model.GetBrands;
 import com.example.demo.src.searches.model.GetSearch;
+import com.example.demo.src.searches.model.GetSearchUserRes;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,15 @@ public class SearchProvider {
             logger.debug("getBrands");
             List<GetBrands> getBrands = searchDao.getBrands(userIdx);
             return getBrands;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetSearchUserRes> getSearchUsers(String search) throws BaseException {
+        try {
+            List<GetSearchUserRes> getSearchUserResList = searchDao.getSearchUsers(search);
+            return getSearchUserResList;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
