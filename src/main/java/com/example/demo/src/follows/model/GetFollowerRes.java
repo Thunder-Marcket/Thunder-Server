@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetFollowsRes {
-    private Following following;
-    private List<FollowingUserItem> followingUserItemList;
+public class GetFollowerRes {
+    private int userIdx;
+    private String profileImgUrl;
+    private String userName;
+    private int itemCnt;
+    private int followerCnt;
 }

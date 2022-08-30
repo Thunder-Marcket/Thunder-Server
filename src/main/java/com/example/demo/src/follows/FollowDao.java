@@ -2,7 +2,7 @@ package com.example.demo.src.follows;
 
 import com.example.demo.src.follows.model.Following;
 import com.example.demo.src.follows.model.FollowingUserItem;
-import com.example.demo.src.follows.model.GetFollowsRes;
+import com.example.demo.src.follows.model.GetFollowerRes;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,5 +89,25 @@ public class FollowDao {
                         rs.getString("imageUrl"),
                         rs.getInt("cost")),
                 getParams);
+    }
+
+    public List<GetFollowerRes> getFollowers(int userIdx) {
+        String getQuery =
+                "select u.userIdx, profileImgUrl, userName\n" +
+                "        , (select count(itemIdx) from Items where userIdx = followerUserIdx group by userIdx) as itemCnt\n" +
+                "        , (select count(followerUserIdx) from Follows where followingUserIdx = F.followerUserIdx group by followingUserIdx) as followerCnt\n" +
+                "from Users u\n" +
+                "    left join Follows F on u.userIdx = F.followerUserIdx\n" +
+                "where followingUserIdx = ?;";
+        int getParams = userIdx;
+        return this.jdbcTemplate.query(getQuery,
+                (rs, rowNum) -> new GetFollowerRes(
+                        rs.getInt("userIdx"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("userName"),
+                        rs.getInt("itemCnt"),
+                        rs.getInt("followerCnt")),
+                getParams);
+
     }
 }

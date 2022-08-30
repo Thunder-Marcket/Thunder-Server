@@ -2,7 +2,8 @@ package com.example.demo.src.follows;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.follows.model.GetFollowsRes;
+import com.example.demo.src.follows.model.GetFollowerRes;
+import com.example.demo.src.follows.model.GetFollowingRes;
 import com.example.demo.src.follows.model.PostFollowsRes;
 import com.example.demo.utils.JwtService;
 import lombok.AllArgsConstructor;
@@ -58,15 +59,36 @@ public class FollowController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}")
-    public BaseResponse<List<GetFollowsRes>> getFollowings(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetFollowingRes>> getFollowings(@PathVariable("userIdx") int userIdx) {
         try {
             int userIdxByJwt = jwtService.getUserIdx();
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            List<GetFollowsRes> getFollowsResList = followProvider.getFollowings(userIdx);
+            List<GetFollowingRes> getFollowsResList = followProvider.getFollowings(userIdx);
             return new BaseResponse<>(getFollowsResList);
         }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 내 팔로워 조회 API
+     * [GET] /follows/followers/:userIdx
+     *
+     * @return BaseResponse<List < GetFollowerRes>>
+     */
+    @ResponseBody
+    @GetMapping("/followers/{userIdx}")
+    public BaseResponse<List<GetFollowerRes>> getFollowers(@PathVariable("userIdx") int userIdx) {
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetFollowerRes> getFollowerResList = followProvider.getFollowers(userIdx);
+            return new BaseResponse<>(getFollowerResList);
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
