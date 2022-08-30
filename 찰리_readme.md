@@ -40,6 +40,9 @@ https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FA
   - 이미지를 서버에서 직접 올릴려고 시도 했으나 실패했다. (default 파일을 임의로 다뤘더니 서버 동작에 문제가 생겼었다...)
   - S3를 이용해 이미지 처리하는 것을 고려해
 
+## 22.08.29
+  - API 명세서 중 2-3 개발
+
 ## 1차 피드백 
   - 환경 이슈 빠르게 해결할 것
   - API 인당 20개 정도는 만들어야 할 것

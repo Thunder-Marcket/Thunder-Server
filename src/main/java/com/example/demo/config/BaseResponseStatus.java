@@ -108,6 +108,8 @@ public enum BaseResponseStatus {
 
     MODIFY_FAIL_SALESVIEWS_UPDATETIME(false, 4023 , "최근 본 상품 시간 수정 실패" ),
 
+    MODIFY_FAIL_LIKE_STATUS(false, 4024 , "찜 상태 수정 실패" ),
+
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
 

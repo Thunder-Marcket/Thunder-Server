@@ -56,4 +56,28 @@ public class LikeDao {
                         rs.getString("imageUrl")),
                 getLikeItemsParams);
     }
+
+    public int checkLikes(int userIdx, int itemIdx) {
+        String checkQuery = "select exists(select likeIdx from Likes where userIdx = ? and itemIdx = ?);\n";
+        Object[] checkParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, checkParams);
+    }
+
+    public int createLikes(int userIdx, int itemIdx) {
+        String createQuery = "insert into Likes(userIdx, itemIdx) values(?, ?);";
+        Object[] createParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.update(createQuery, createParams);
+    }
+
+    public String checkLikesStatus(int userIdx, int itemIdx) {
+        String checkQuery = "select status from Likes where userIdx = ? and itemIdx = ?;";
+        Object[] checkParams = new Object[]{userIdx, itemIdx};
+        return this.jdbcTemplate.queryForObject(checkQuery, String.class, checkParams);
+    }
+
+    public int modifyLikeStatus(int userIdx, int itemIdx, String status) {
+        String modifyQuery = "update Likes set status = ?, updatedAt = now() where userIdx = ? and itemIdx = ?;";
+        Object[] modifyParams = new Object[]{status, userIdx, itemIdx};
+        return this.jdbcTemplate.update(modifyQuery, modifyParams);
+    }
 }
