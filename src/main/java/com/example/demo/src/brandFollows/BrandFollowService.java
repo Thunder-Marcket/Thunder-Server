@@ -8,8 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_LIKE_STATUS;
+import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_BRAND_FOLLOWS_STATUS;
+import static com.example.demo.config.BaseResponseStatus.POST_FAIL_BRAND_FOLLOWS;
+
 
 @AllArgsConstructor
 @Service
@@ -24,7 +25,7 @@ public class BrandFollowService {
         if (brandFollowProvider.checkBrandFollows(userIdx, brandIdx) == 0) {
             int result = brandFollowDao.createBrandFollows(userIdx, brandIdx);
             if (result == 0) {
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(POST_FAIL_BRAND_FOLLOWS);
             }
             logger.debug("create brand_follows");
             resultMessage = "브랜드 팔로우 성공";
@@ -32,14 +33,14 @@ public class BrandFollowService {
             if (brandFollowProvider.checkBrandFollowsStatus(userIdx, brandIdx).equals("disable")) {
                 int result = brandFollowDao.modifyBrandFollowsStatus(userIdx, brandIdx, "enable");
                 if (result == 0) {
-                    throw new BaseException(DATABASE_ERROR);
+                    throw new BaseException(MODIFY_FAIL_BRAND_FOLLOWS_STATUS);
                 }
                 logger.debug("modifyBrandFollowsStatus enable");
                 resultMessage = "브랜드 팔로우 성공";
             } else {
                 int result = brandFollowDao.modifyBrandFollowsStatus(userIdx, brandIdx, "disable");
                 if (result == 0) {
-                    throw new BaseException(DATABASE_ERROR);
+                    throw new BaseException(MODIFY_FAIL_BRAND_FOLLOWS_STATUS);
                 }
                 logger.debug("modifyBrandFollowsStatus disable");
                 resultMessage = "브랜드 팔로우 해제 성공";

@@ -60,6 +60,8 @@ public enum BaseResponseStatus {
 
     POST_FAIL_LIKES(false, 2626 , "찜하기를 실패했습니다" ),
 
+    POST_FAIL_BRAND_FOLLOWS(false, 2627, "브랜드 팔로우하는데 실패했습니다."),
+
     // [POST] / Items
     POST_ITEMS_NEED_IMAGES(false, 2650, "상품 등록시 이미지가 필요합니다."),
     POST_ITEMS_OVER_IMAGES(false, 2651, "상품 등록시 이미지가 12개를 넘어가면 안됩니다."),
@@ -116,6 +118,8 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_SALESVIEWS_UPDATETIME(false, 4023 , "최근 본 상품 시간 수정 실패" ),
 
     MODIFY_FAIL_LIKE_STATUS(false, 4024 , "찜 상태 수정 실패" ),
+
+    MODIFY_FAIL_BRAND_FOLLOWS_STATUS(false, 4025, "브랜드 팔로우 상태 수정 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
