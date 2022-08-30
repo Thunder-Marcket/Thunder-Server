@@ -29,4 +29,21 @@ public class LikeProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkLikes(int userIdx, int itemIdx) throws BaseException {
+        try {
+            return likeDao.checkLikes(userIdx, itemIdx);
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String checkLikeStatus(int userIdx, int itemIdx) throws BaseException {
+        try {
+            String result = likeDao.checkLikesStatus(userIdx, itemIdx);
+            return result;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
