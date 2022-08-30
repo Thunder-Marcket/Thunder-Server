@@ -26,7 +26,7 @@ public class LikeService {
         if (likeProvider.checkLikes(userIdx, itemIdx) == 0) {
             int result = likeDao.createLikes(userIdx, itemIdx);
             if (result == 0) {
-                throw new BaseException(DATABASE_ERROR);
+                throw new BaseException(POST_FAIL_LIKES);
             }
             resultMessage = "찜 성공";
         } else {

@@ -58,6 +58,8 @@ public enum BaseResponseStatus {
 
     POST_FAIL_SALESVIEWS(false, 2625,"최근 본 상품을 생성하는데 실패했습니다."),
 
+    POST_FAIL_LIKES(false, 2626 , "찜하기를 실패했습니다" ),
+
     // [POST] / Items
     POST_ITEMS_NEED_IMAGES(false, 2650, "상품 등록시 이미지가 필요합니다."),
     POST_ITEMS_OVER_IMAGES(false, 2651, "상품 등록시 이미지가 12개를 넘어가면 안됩니다."),
