@@ -33,13 +33,13 @@ public class LikeService {
             if (likeProvider.checkLikeStatus(userIdx, itemIdx).equals("disable")) {
                 int result = likeDao.modifyLikeStatus(userIdx, itemIdx, "enable");
                 if (result == 0) {
-                    throw new BaseException(DATABASE_ERROR);
+                    throw new BaseException(MODIFY_FAIL_LIKE_STATUS);
                 }
                 resultMessage = "찜 성공";
             } else {
                 int result = likeDao.modifyLikeStatus(userIdx, itemIdx, "disable");
                 if (result == 0) {
-                    throw new BaseException(DATABASE_ERROR);
+                    throw new BaseException(MODIFY_FAIL_LIKE_STATUS);
                 }
                 resultMessage = "찜 해제 성공";
             }

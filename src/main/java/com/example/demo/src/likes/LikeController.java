@@ -49,7 +49,7 @@ public class LikeController {
     }
 
     /**
-     * 찜하기/찜 해제하기
+     * 상품 찜/찜 해제
      * [POST] /likes/:userIdx/:itemIdx
      *
      * @return BaseResponse<PostLikeRes>
