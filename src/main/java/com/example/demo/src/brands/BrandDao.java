@@ -80,8 +80,7 @@ public class BrandDao {
     }
 
     public List<GetFollowBrandRes> getFollowBrandList(int userIdx) {
-        String getFollowBrandQuery =
-                "select\n" +
+        String getFollowBrandQuery = "select\n" +
                 "    B.brandIdx,\n" +
                 "    B.brandName,\n" +
                 "    B.brandSubName,\n" +
@@ -95,7 +94,9 @@ public class BrandDao {
                 "    B.brandName\n" +
                 "from Brands B\n" +
                 "inner join Brand_Follows F on B.brandIdx = F.followingBrandIdx\n" +
-                "where F.followerUserIdx = ?;";
+                "where F.followerUserIdx = ?\n" +
+                "and F.status = 'enable';";
+
         Object[] getFollowBrandParams = new Object[]{userIdx, userIdx};
 
         return this.jdbcTemplate.query(getFollowBrandQuery,
