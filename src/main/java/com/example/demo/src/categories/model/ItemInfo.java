@@ -15,4 +15,7 @@ public class ItemInfo {
     private int isSafePayment;
     private int isLike;
     private int isAdItem;
+    private String uploadTime;
+    private String address;
+    private int likeCnt;
 }

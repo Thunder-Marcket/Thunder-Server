@@ -20,9 +20,9 @@ public class CategoryDao {
 
     public List<ItemInfo> getItemsByCategory(int userIdx, int categoryIdx) {
         String getQuery =
-                "select i.itemIdx, \n" +
-                "       concat(cost,'원') as cost, \n" +
-                "       itemName, \n" +
+                "select i.itemIdx,\n" +
+                "       concat(cost,'원') as cost,\n" +
+                "       itemName,\n" +
                 "       isSafePayment,\n" +
                 "       (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
                 "                                                                    from Images\n" +
@@ -30,13 +30,28 @@ public class CategoryDao {
                 "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
                 "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl,\n" +
                 "       case when l.status = 'enable' then 1 else 0 end isLike,\n" +
-                "       isAdItem\n" +
+                "       isAdItem,\n" +
+                "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
+                "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(minute, i.updatedAt, current_timestamp),' 분 전')\n" +
+                "        when timestampdiff(hour , i.updatedAt, current_timestamp) <24\n" +
+                "        then concat(timestampdiff(hour, i.updatedAt, current_timestamp),' 시간 전')\n" +
+                "        else concat(datediff( current_timestamp, i.updatedAt),' 일 전')\n" +
+                "    end                                      as uploadTime,\n" +
+                "      i.address,\n" +
+                "       likeCnt\n" +
                 "from Items i\n" +
-                "left join (\n" +
-                "    select userIdx, itemIdx, status\n" +
-                "    from Likes\n" +
-                "    where userIdx = ?\n" +
-                ") l on l.itemIdx = i.itemIdx\n" +
+                "    join(\n" +
+                "        select count(likeIdx) as likeCnt, L.itemIdx\n" +
+                "        from Likes L\n" +
+                "        group by L.itemIdx\n" +
+                "    )L on i.itemIdx = L.itemIdx\n" +
+                "    left join (\n" +
+                "        select userIdx, itemIdx, status\n" +
+                "        from Likes\n" +
+                "        where userIdx = ?\n" +
+                "    ) l on l.itemIdx = i.itemIdx\n" +
                 "where i.categoryIdx = ?";
         Object[] getParams = new Object[]{userIdx, categoryIdx};
         return this.jdbcTemplate.query(getQuery,
@@ -47,30 +62,48 @@ public class CategoryDao {
                         rs.getString("itemName"),
                         rs.getInt("isSafePayment"),
                         rs.getInt("isLike"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("uploadTime"),
+                        rs.getString("address"),
+                        rs.getInt("likeCnt")),
                 getParams);
     }
 
     public List<ItemInfo> getItemsByTwoCategory(int userIdx, int categoryIdx, int subCategoryIdx) {
         String getQuery =
-                "select i.itemIdx, \n" +
-                "       concat(cost,'원') as cost, \n" +
-                "       itemName, \n" +
-                "       isSafePayment,\n" +
-                "       (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
-                "                                                                    from Images\n" +
-                "                                                                        inner join ItemImages ii on Images.itemImageIdx = ii.itemImageIdx\n" +
-                "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
-                "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl,\n" +
-                "       case when l.status = 'enable' then 1 else 0 end isLike,\n" +
-                "       isAdItem\n" +
-                "from Items i\n" +
-                "left join (\n" +
-                "    select userIdx, itemIdx, status\n" +
-                "    from Likes\n" +
-                "    where userIdx = ?\n" +
-                ") l on l.itemIdx = i.itemIdx\n" +
-                "where i.categoryIdx = ? and i.subCategoryIdx = ?";
+                "select i.itemIdx,\n" +
+                    "       concat(cost,'원') as cost,\n" +
+                    "       itemName,\n" +
+                    "       isSafePayment,\n" +
+                    "       (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
+                    "                                                                    from Images\n" +
+                    "                                                                        inner join ItemImages ii on Images.itemImageIdx = ii.itemImageIdx\n" +
+                    "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
+                    "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl,\n" +
+                    "       case when l.status = 'enable' then 1 else 0 end isLike,\n" +
+                    "       isAdItem,\n" +
+                    "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
+                    "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
+                    "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
+                    "        then concat(timestampdiff(minute, i.updatedAt, current_timestamp),' 분 전')\n" +
+                    "        when timestampdiff(hour , i.updatedAt, current_timestamp) <24\n" +
+                    "        then concat(timestampdiff(hour, i.updatedAt, current_timestamp),' 시간 전')\n" +
+                    "        else concat(datediff( current_timestamp, i.updatedAt),' 일 전')\n" +
+                    "    end                                      as uploadTime,\n" +
+                    "      i.address,\n" +
+                    "       likeCnt\n" +
+                    "from Items i\n" +
+                    "    join(\n" +
+                    "        select count(likeIdx) as likeCnt, L.itemIdx\n" +
+                    "        from Likes L\n" +
+                    "        group by L.itemIdx\n" +
+                    "    )L on i.itemIdx = L.itemIdx\n" +
+                    "    left join (\n" +
+                    "        select userIdx, itemIdx, status\n" +
+                    "        from Likes\n" +
+                    "        where userIdx = ?\n" +
+                    "    ) l on l.itemIdx = i.itemIdx\n" +
+                    "where i.categoryIdx = ? and i.subCategoryIdx = ?";
         Object[] getParams = new Object[]{userIdx, categoryIdx, subCategoryIdx};
         return this.jdbcTemplate.query(getQuery,
                 (rs, rowNum) -> new ItemInfo(
@@ -80,15 +113,18 @@ public class CategoryDao {
                         rs.getString("itemName"),
                         rs.getInt("isSafePayment"),
                         rs.getInt("isLike"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("uploadTime"),
+                        rs.getString("address"),
+                        rs.getInt("likeCnt")),
                 getParams);
     }
 
     public List<ItemInfo> getItemsByThreeCategory(int userIdx, int categoryIdx, int subCategoryIdx, int subSubcategoryIdx) {
         String getQuery =
-                "select i.itemIdx, \n" +
-                "       concat(cost,'원') as cost, \n" +
-                "       itemName, \n" +
+                "select i.itemIdx,\n" +
+                "       concat(cost,'원') as cost,\n" +
+                "       itemName,\n" +
                 "       isSafePayment,\n" +
                 "       (select Images.imageUrl from Images where Images.imageIdx = (select min(Images.imageIdx)\n" +
                 "                                                                    from Images\n" +
@@ -96,14 +132,29 @@ public class CategoryDao {
                 "                                                                        inner join Items i2 on ii.itemIdx = i2.itemIdx\n" +
                 "                                                                    where i2.itemIdx = i.itemIdx)) as imageUrl,\n" +
                 "       case when l.status = 'enable' then 1 else 0 end isLike,\n" +
-                "       isAdItem\n" +
+                "       isAdItem,\n" +
+                "       case when timestampdiff(second , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(second, i.updatedAt, current_timestamp),' 초 전')\n" +
+                "        when timestampdiff(minute , i.updatedAt, current_timestamp) <60\n" +
+                "        then concat(timestampdiff(minute, i.updatedAt, current_timestamp),' 분 전')\n" +
+                "        when timestampdiff(hour , i.updatedAt, current_timestamp) <24\n" +
+                "        then concat(timestampdiff(hour, i.updatedAt, current_timestamp),' 시간 전')\n" +
+                "        else concat(datediff( current_timestamp, i.updatedAt),' 일 전')\n" +
+                "    end                                      as uploadTime,\n" +
+                "      i.address,\n" +
+                "       likeCnt\n" +
                 "from Items i\n" +
-                "left join (\n" +
-                "    select userIdx, itemIdx, status\n" +
-                "    from Likes\n" +
-                "    where userIdx = ?\n" +
-                ") l on l.itemIdx = i.itemIdx\n" +
-                "where i.categoryIdx = ? and i.subCategoryIdx = ? and i.subSubcategoryIdx = ?";
+                "    join(\n" +
+                "        select count(likeIdx) as likeCnt, L.itemIdx\n" +
+                "        from Likes L\n" +
+                "        group by L.itemIdx\n" +
+                "    )L on i.itemIdx = L.itemIdx\n" +
+                "    left join (\n" +
+                "        select userIdx, itemIdx, status\n" +
+                "        from Likes\n" +
+                "        where userIdx = ?\n" +
+                "    ) l on l.itemIdx = i.itemIdx\n" +
+                "where i.categoryIdx = ? and i.subCategoryIdx = ? and i.subSubcategoryIdx = ?;";
         Object[] getParams = new Object[]{userIdx, categoryIdx, subCategoryIdx, subSubcategoryIdx};
         return this.jdbcTemplate.query(getQuery,
                 (rs, rowNum) -> new ItemInfo(
@@ -113,7 +164,10 @@ public class CategoryDao {
                         rs.getString("itemName"),
                         rs.getInt("isSafePayment"),
                         rs.getInt("isLike"),
-                        rs.getInt("isAdItem")),
+                        rs.getInt("isAdItem"),
+                        rs.getString("uploadTime"),
+                        rs.getString("address"),
+                        rs.getInt("likeCnt")),
                 getParams);
     }
 
