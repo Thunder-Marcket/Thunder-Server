@@ -39,6 +39,7 @@ public enum BaseResponseStatus {
     DELETED_USER( false, 2022 , "탈퇴한 유저입니다." ),
     DELETED_SALESVIEWS(false, 2023, "이미 최근 본 상품에서 삭제된 상태입니다."),
 
+    POST_CATEGORY_EMPTY_ID(false,2024, "대분류 카테고리를 입력해주세요"),
 
     // [POST] /addresses
     POST_ADDRESSES_EMPTY_PHONENUM(false, 2601, "배송지 입력시 전화번호가 필요합니다."),
