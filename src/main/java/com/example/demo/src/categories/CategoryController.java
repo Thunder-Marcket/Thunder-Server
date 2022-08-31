@@ -29,16 +29,16 @@ public class CategoryController {
      * [GET] /categories?categoryIdx=
      *
      * 중분류 카테고리에 해당하는 상품 리스트 조회 API
-     * [GET] /categories?categoryIdx= ?subCategoryIdx?=
+     * [GET] /categories?categoryIdx= &subCategoryIdx=
      *
      * 소분류 카테고리에 해당하는 상품 리스트 조회 API
-     * [GET] /categories?categoryIdx= ?subCategoryIdx?= subSubcategoryIdx?=
+     * [GET] /categories?categoryIdx= &subCategoryIdx= &subSubcategoryIdx=
      *
      * @return BaseResponse<GetCategoryItemsRes>
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<GetCategoryItemsRes> getItemsByCategory(@RequestParam int categoryIdx,
+    public BaseResponse<GetCategoryItemsRes> getItemsByCategory(@RequestParam(defaultValue = "0") int categoryIdx,
                                                                 @RequestParam(required = false, defaultValue = "0") int subCategoryIdx,
                                                                 @RequestParam(required = false, defaultValue = "0") int subSubcategoryIdx) {
         try {
@@ -46,6 +46,9 @@ public class CategoryController {
             logger.debug("subCategoryIdx = {}", subCategoryIdx);
             logger.debug("subSubcategoryIdx = {}", subSubcategoryIdx);
             int userIdx = jwtService.getUserIdx();
+            if (categoryIdx == 0) {
+                throw new BaseException(POST_CATEGORY_EMPTY_ID);
+            }
             GetCategoryItemsRes getCategoryItemsRes = categoryProvider.getItemsByCategory(userIdx, categoryIdx, subCategoryIdx, subSubcategoryIdx);
             return new BaseResponse<>(getCategoryItemsRes);
         }catch (BaseException exception){
