@@ -85,7 +85,7 @@ public enum BaseResponseStatus {
 
 
     // [POST] /naver-api
-    POST_ROADADDRESS_INVALID_ADDRESS(false, 2800, "잘못 된 도로명 주소입니다."),
+        POST_ROADADDRESS_INVALID_ADDRESS(false, 2800, "잘못 된 도로명 주소입니다."),
 
     /**
      * 3000 : Response 오류
