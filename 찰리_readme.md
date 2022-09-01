@@ -51,6 +51,9 @@ https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FA
   - 네이버 지도 API를 이용할 방법 생각...
   - 스프링에서 다른 api를 호출하는 방법 찾기...
 
+## 22.09.01
+  - 네이버 api를 이용해서 도로명 주소를 위도, 경도로 바꿔 돌려주는 api(18-1, 18-2) 개발
+
 ## 1차 피드백 
   - 환경 이슈 빠르게 해결할 것
   - API 인당 20개 정도는 만들어야 할 것
