@@ -211,10 +211,22 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(findQuery, int.class, findParams);
     }
 
-    public int updateUserInfo(int userIdx, String nickname, String profile_image) {
+    public int updateUserInfo(int userIdx, Object nickname, Object profile_image) {
         String updateUserQuery = "update Users set userName = ?, profileImgUrl = ? where userIdx = ?\n";
-        Object[] updateUserParams = new Object[]{nickname, profile_image, userIdx};
+        Object[] updateUserParams = new Object[]{(String) nickname, (String) profile_image, userIdx};
         return this.jdbcTemplate.update(updateUserQuery, updateUserParams);
+    }
+
+    public int checkUserByKakaoId(Object kakaoId) {
+        String checkUserQuery = "select exists(select userIdx from Users where kakaoId = ?);\n";
+        Long checkUserParams = (Long) kakaoId;
+        return this.jdbcTemplate.queryForObject(checkUserQuery, int.class, checkUserParams);
+    }
+
+    public int findUserIdByKakaoId(Object kakaoId) {
+        String findQuery = "select userIdx from Users where kakaoId = ?";
+        Long findParams = (Long) kakaoId;
+        return this.jdbcTemplate.queryForObject(findQuery, int.class, findParams);
     }
 }
 

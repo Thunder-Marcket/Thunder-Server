@@ -141,13 +141,14 @@ public class UserController {
     /**
      * 카카오 로그인
      * [POST] /app/users/kakao-logIn
+     * @return BaseResponse<KakaoLogInRes>
      */
     @ResponseBody
     @PostMapping("/kakao-logIn")
     public BaseResponse<KakaoLogInRes> kakaoLogIn(@RequestBody KakaoLogInReq kakaoLogInReq,
                                                   HttpServletResponse response) throws BaseException, IOException {
         try {
-            HashMap<String, String> kakaoUserInfo = kakaoLogInService.getKakaoUserInfo(kakaoLogInReq);
+            HashMap<String, Object> kakaoUserInfo = kakaoLogInService.getKakaoUserInfo(kakaoLogInReq);
             logger.debug("kakaoUserInfo success");
             KakaoLogInRes kakaoLogInRes = kakaoLogInService.saveOrUpdateKakaoUser(kakaoUserInfo);
 

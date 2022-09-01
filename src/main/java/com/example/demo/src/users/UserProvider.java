@@ -87,8 +87,16 @@ public class UserProvider {
         return status.get(0);
     }
 
-    public int checkUserByName(String nickname) {
-        return userDao.checkUserByName(nickname);
+//    public int checkUserByName(String nickname) {
+//        return userDao.checkUserByName(nickname);
+//    }
+
+    public int checkUserByKakaoId(Object kakao_id) {
+        return userDao.checkUserByKakaoId(kakao_id);
+    }
+
+    public int findUserIdByKakaoId(Object kakao_id) {
+        return userDao.findUserIdByKakaoId(kakao_id);
     }
 }
 

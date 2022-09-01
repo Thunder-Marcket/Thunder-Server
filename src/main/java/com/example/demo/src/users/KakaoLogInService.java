@@ -39,10 +39,10 @@ public class KakaoLogInService {
     @Autowired
     private final JwtService jwtService;
 
-    public HashMap<String, String> getKakaoUserInfo(KakaoLogInReq kakaoLogInReq) throws IOException {
+    public HashMap<String, Object>  getKakaoUserInfo(KakaoLogInReq kakaoLogInReq) throws IOException {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         String token = kakaoLogInReq.getAccessToken();
-        HashMap<String, String> userInfo = new HashMap<>();
+        HashMap<String, Object> userInfo = new HashMap<>();
 
         //access_token을 이용하여 사용자 정보 조회
         try {
@@ -55,7 +55,7 @@ public class KakaoLogInService {
 
             //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
+            logger.debug("responseCode : " + responseCode);
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -65,20 +65,23 @@ public class KakaoLogInService {
             while ((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body : " + result);
+            logger.debug("response body : " + result);
 
             //Gson 라이브러리로 JSON파싱
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
+            Long kakao_id = element.getAsJsonObject().get("id").getAsLong();
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
 
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
             String profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
 
-            System.out.println("nickname : " + nickname);
-            System.out.println("profile_image : " + profile_image);
+            logger.debug("kakao_id : "+kakao_id);
+            logger.debug("nickname : " + nickname);
+            logger.debug("profile_image : " + profile_image);
 
+            userInfo.put("kakao_id", kakao_id);
             userInfo.put("nickname",nickname);
             userInfo.put("profile_image", profile_image);
 
@@ -89,13 +92,13 @@ public class KakaoLogInService {
         return userInfo;
     }
 
-    public KakaoLogInRes saveOrUpdateKakaoUser(HashMap<String, String> kakaoUserInfo) throws BaseException {
-        int isUser = userProvider.checkUserByName(kakaoUserInfo.get("nickname"));
+    public KakaoLogInRes saveOrUpdateKakaoUser(HashMap<String, Object> kakaoUserInfo) throws BaseException {
+        int isUser = userProvider.checkUserByKakaoId(kakaoUserInfo.get("kakao_id"));
         logger.debug("isUser = {}", isUser);
         int userIdx = 0;
         String jwt = null;
         if (isUser == 1) {
-            userIdx = userDao.findByUserName(kakaoUserInfo.get("nickname"));
+            userIdx = userProvider.findUserIdByKakaoId(kakaoUserInfo.get("kakao_id"));
             int result = userDao.updateUserInfo(userIdx, kakaoUserInfo.get("nickname"), kakaoUserInfo.get("profile_image"));
             if (result == 0) {
                 throw new BaseException(DATABASE_ERROR);
