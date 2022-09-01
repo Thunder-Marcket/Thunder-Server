@@ -47,7 +47,9 @@ https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FA
   - API 명세서 중 10-1, 10-2, 6-3 개발
 
 ## 22.08.31
-  - 
+  - API 명세서 중 16-1 개발
+  - 네이버 지도 API를 이용할 방법 생각...
+  - 스프링에서 다른 api를 호출하는 방법 찾기...
 
 ## 1차 피드백 
   - 환경 이슈 빠르게 해결할 것
