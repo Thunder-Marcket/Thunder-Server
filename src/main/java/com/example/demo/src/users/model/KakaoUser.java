@@ -3,17 +3,14 @@ package com.example.demo.src.users.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KakaoLogInRes  {
-    private int userIdx;
-    private String jwt;
+public class KakaoUser {
     private Long kakaoId;
-    private String profileImageUrl;
+    private String profileImgUrl;
     private String userName;
 }

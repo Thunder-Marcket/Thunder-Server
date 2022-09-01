@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.users.model.KakaoLogInReq;
 import com.example.demo.src.users.model.KakaoLogInRes;
+import com.example.demo.src.users.model.KakaoUser;
 import com.example.demo.utils.JwtService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,6 +35,8 @@ public class KakaoLogInService {
 
     @Autowired
     private final UserProvider userProvider;
+    @Autowired
+    private final UserService userService;
     @Autowired
     private final UserDao userDao;
     @Autowired
@@ -93,6 +96,11 @@ public class KakaoLogInService {
     }
 
     public KakaoLogInRes saveOrUpdateKakaoUser(HashMap<String, Object> kakaoUserInfo) throws BaseException {
+        KakaoUser kakaoUser = new KakaoUser();
+        kakaoUser.setKakaoId((Long) kakaoUserInfo.get("kakao_id"));
+        kakaoUser.setProfileImgUrl((String) kakaoUserInfo.get("profile_image"));
+        kakaoUser.setUserName((String) kakaoUserInfo.get("nickname"));
+
         int isUser = userProvider.checkUserByKakaoId(kakaoUserInfo.get("kakao_id"));
         logger.debug("isUser = {}", isUser);
         int userIdx = 0;
@@ -106,8 +114,8 @@ public class KakaoLogInService {
             jwt = jwtService.createJwt(userIdx);
 
         } else {
-            throw new BaseException(NOT_FOUND_USER_BY_USERNAME);
+            return new KakaoLogInRes(userIdx, jwt, (Long) kakaoUserInfo.get("kakao_id"), (String) kakaoUserInfo.get("profile_image"), (String) kakaoUserInfo.get("nickname") );
         }
-        return new KakaoLogInRes(userIdx, jwt);
+        return new KakaoLogInRes(userIdx, jwt, (Long) kakaoUserInfo.get("kakao_id"), (String) kakaoUserInfo.get("profile_image"), (String) kakaoUserInfo.get("nickname") );
     }
 }
