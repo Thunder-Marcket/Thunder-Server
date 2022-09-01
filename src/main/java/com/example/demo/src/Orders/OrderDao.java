@@ -263,7 +263,10 @@ public class OrderDao {
                 "from Orders O\n" +
                 "inner join Items I on O.itemIdx = I.itemIdx\n" +
                 "inner join Users U on I.userIdx = U.userIdx\n" +
-                "where O.buyUserIdx = ?;";
+                "\n" +
+                "where O.buyUserIdx = ?\n" +
+                "\n" +
+                "order by O.createdAt DESC;";
         int getPurchaseParam = userIdx;
 
         return this.jdbcTemplate.query(getPurchaseQuery,
