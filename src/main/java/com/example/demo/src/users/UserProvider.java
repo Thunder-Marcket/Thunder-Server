@@ -86,5 +86,9 @@ public class UserProvider {
         }
         return status.get(0);
     }
+
+    public int checkUserByName(String nickname) {
+        return userDao.checkUserByName(nickname);
+    }
 }
 

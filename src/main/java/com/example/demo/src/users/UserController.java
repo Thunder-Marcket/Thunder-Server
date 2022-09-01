@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -27,6 +30,8 @@ public class UserController {
     private final UserProvider userProvider;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final KakaoLogInService kakaoLogInService;
     @Autowired
     private final JwtService jwtService;
 
@@ -131,5 +136,26 @@ public class UserController {
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+    }
+
+    /**
+     * 카카오 로그인
+     * [POST] /app/users/kakao-logIn
+     */
+    @ResponseBody
+    @PostMapping("/kakao-logIn")
+    public BaseResponse<KakaoLogInRes> kakaoLogIn(@RequestBody KakaoLogInReq kakaoLogInReq,
+                                                  HttpServletResponse response) throws BaseException, IOException {
+        try {
+            HashMap<String, String> kakaoUserInfo = kakaoLogInService.getKakaoUserInfo(kakaoLogInReq);
+            logger.debug("kakaoUserInfo success");
+            KakaoLogInRes kakaoLogInRes = kakaoLogInService.saveOrUpdateKakaoUser(kakaoUserInfo);
+
+            response.addHeader("Authorization", "BEARER" + " " + kakaoLogInRes.getJwt());
+            return new BaseResponse<>(kakaoLogInRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
     }
 }

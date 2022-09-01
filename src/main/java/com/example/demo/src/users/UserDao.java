@@ -198,5 +198,23 @@ public class UserDao {
 
         return this.jdbcTemplate.update(modifyUserStatusToEnableQuery, modifyUserStatusToEnableParams);
     }
+
+    public int checkUserByName(String nickname) {
+        String checkUserQuery = "select exists(select userIdx from Users where userName = ?);\n";
+        String checkUserParams = nickname;
+        return this.jdbcTemplate.queryForObject(checkUserQuery, int.class, checkUserParams);
+    }
+
+    public int findByUserName(String nickname) {
+        String findQuery = "select userIdx from Users where userName = ?";
+        String findParams = nickname;
+        return this.jdbcTemplate.queryForObject(findQuery, int.class, findParams);
+    }
+
+    public int updateUserInfo(int userIdx, String nickname, String profile_image) {
+        String updateUserQuery = "update Users set userName = ?, profileImgUrl = ? where userIdx = ?\n";
+        Object[] updateUserParams = new Object[]{nickname, profile_image, userIdx};
+        return this.jdbcTemplate.update(updateUserQuery, updateUserParams);
+    }
 }
 
