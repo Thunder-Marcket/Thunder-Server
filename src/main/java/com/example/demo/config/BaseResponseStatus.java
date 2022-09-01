@@ -82,6 +82,10 @@ public enum BaseResponseStatus {
     POST_CHATS_INVALID_ITEM(false, 2751, "해당 상품이 존재하지 않습니다."),
     POST_CHATS_INVALID_CHATROOM(false, 2752, "해당 톡방이 없습니다."),
 
+
+    // [POST] /naver-api
+    POST_ROADADDRESS_INVALID_ADDRESS(false, 2800, "잘못 된 도로명 주소입니다."),
+
     /**
      * 3000 : Response 오류
      */
