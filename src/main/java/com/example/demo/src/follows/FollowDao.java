@@ -58,6 +58,7 @@ public class FollowDao {
                 "        select userIdx, followingUserIdx, followerUserIdx, profileImgUrl, userName\n" +
                 "        from Users u\n" +
                 "            left join Follows F on u.userIdx = F.followingUserIdx\n" +
+                "            where F.status = 'enable'\n" +
                 "            group by F.followingUserIdx\n" +
                 "    ) u on u.userIdx = i.userIdx\n" +
                 "where u.followerUserIdx = ?\n" +
