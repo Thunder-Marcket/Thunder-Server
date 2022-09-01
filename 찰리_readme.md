@@ -57,3 +57,6 @@ https://docs.google.com/spreadsheets/d/1QCRShw8Av8n6jFE01VDI8voo74a2yPCs_GiTj1FA
 ## 1차 피드백 
   - 환경 이슈 빠르게 해결할 것
   - API 인당 20개 정도는 만들어야 할 것
+
+## 2차 피드백
+  - 네이버 지도 API를 활용해서 도로명 주소를 위도, 경도로 변환해 
